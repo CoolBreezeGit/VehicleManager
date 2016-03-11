@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.coolbreeze.oa.domain">
+
+	<class name="P_Base">
+		<id name="id">
+            <generator class="native"/>
+		</id>
+
+		<property name="guidePrice"></property>
+		<property name="quotedMarketPrice"></property>
+		<property name="productionTime"></property>
+		<property name="EnginePosition"></property>
+		<property name="drivingForm"></property>
+		<property name="integratedFuelConsumption"></property>
+		<property name="maximumSpeed"></property>
+		
+		
+	</class>
+	
+</hibernate-mapping>

@@ -1,0 +1,52 @@
+
+<!DOCTYPE struts PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+          "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+
+	<constant name="struts.ui.theme" value="simple"></constant>
+
+	<package name="/" extends="struts-default" namespace="/">
+	
+	
+		<action name="userAction_*" class="userAction" method="{1}">
+			<result name="loginUI">
+				/WEB-INF/jsp/user/login.jsp
+			</result>
+			<result name="toIndex" type="redirectAction">
+				userAction_index
+			</result>
+			<result name="index">
+				/WEB-INF/jsp/index.jsp
+			</result>
+		</action>
+
+
+		<action name="vehicleAction_*" class="vehicleAction" method="{1}">
+			<result name="list">
+				/WEB-INF/jsp/vehicle/list.jsp
+			</result>
+			<result name="redirectList" type="redirectAction">
+				vehicleAction_list
+			</result>
+			<result name="addUI">
+				/WEB-INF/jsp/vehicle/addUI.jsp
+			</result>
+			<result name="editUI">
+				/WEB-INF/jsp/vehicle/editUI.jsp
+			</result>
+			
+			<result name="compareUI">
+				/WEB-INF/jsp/vehicle/addUI.jsp
+			</result>
+		</action>
+
+
+
+
+	</package>
+
+
+
+</struts>

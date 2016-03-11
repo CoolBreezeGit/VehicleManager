@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.coolbreeze.oa.domain">
+
+	<class name="V_Param">
+		<id name="id">
+            <generator class="native"/>
+		</id>
+
+		<!-- 基础参数 -->		
+		<many-to-one name="p_Base" unique="true" class="P_Base" column="p_BaseId"></many-to-one>
+		
+	</class>
+	
+</hibernate-mapping>
