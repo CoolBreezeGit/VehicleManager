@@ -48,9 +48,7 @@ public class VehicleAction extends ActionSupport {
 
 	public String add() {
 		
-		System.out.println(v_Brand.getName());
-		System.out.println(v_Param.getP_Base().getGuidePrice());
-		
+
 		
 		
 		v_ParamService.save(v_Param);
@@ -73,6 +71,12 @@ public class VehicleAction extends ActionSupport {
 		return "compareUI";
 	}
 
+	
+	public void test(){
+		System.out.println(v_Brand.getName());
+		System.out.println(v_Param.getBase());
+	}
+	
 	// ---------------------------------------------------
 
 	public V_Brand getV_Brand() {

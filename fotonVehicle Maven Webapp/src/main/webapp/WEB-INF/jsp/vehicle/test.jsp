@@ -6,9 +6,68 @@
 <html>
 <head>
 <title>增加车型</title>
+
+<script src="${pageContext.request.contextPath}/script/jquery-2.1.4.js"></script>
+<script>
+	$(function() {
+
+		$("#vehicleAction_add").click(function() {
+
+			var base = "";
+			$("#base").find("input").each(function() {
+				base = base + "," + $(this).val();
+			});
+
+			alert(base);
+			$("input[name=v_Param\\.base]").val(base);
+			//$("input[type=hidden]").val(base);
+			alert($("input[type=hidden]").val());
+
+			//$("#dataForm").submit();
+
+		});
+
+	});
+</script>
+
+
 </head>
 
 <body>
+
+	<s:form id="dataForm"
+		action="vehicleAction_test"
+		method="post">
+
+		<input type="hidden" name="v_Param.base" value="">
+
+
+		<div id="column_1">
+			<div>
+				<h2>品牌</h2>
+				<input type="text" name="v_Brand.name" value=""
+					id="vehicleAction_add_v_Brand_name" />
+			</div>
+		</div>
+
+		<div id="column_2">
+			<div>
+				<h2>车型</h2>
+				<input type="text" name="v_Type" value=""
+					id="vehicleAction_add_v_Type_name" />
+			</div>
+		</div>
+
+		<div id="column_3">
+			<div>
+				<h2>配置</h2>
+				<input type="text" name="v_Configure" value=""
+					id="vehicleAction_add_v_Configure_name" />
+			</div>
+		</div>
+
+	</s:form>
+
 
 	<div>
 		<div>
@@ -859,3 +918,4 @@
 	</div>
 </body>
 </html>
+
