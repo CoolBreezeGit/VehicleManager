@@ -1,13 +1,22 @@
 package com.coolbreeze.oa.domain;
 
-
 public class V_Configure {
 
 	private Long id;
 
 	private String name;
 
-	private V_Param v_Param;	//该配置下的详细参数
+	private V_Type v_Type;	//对应的车型
+
+	private V_Param v_Param; // 该配置下的详细参数
+
+	public V_Type getV_Type() {
+		return v_Type;
+	}
+
+	public void setV_Type(V_Type v_Type) {
+		this.v_Type = v_Type;
+	}
 
 	public Long getId() {
 		return id;
@@ -32,5 +41,5 @@ public class V_Configure {
 	public void setV_Param(V_Param v_Param) {
 		this.v_Param = v_Param;
 	}
-	
+
 }

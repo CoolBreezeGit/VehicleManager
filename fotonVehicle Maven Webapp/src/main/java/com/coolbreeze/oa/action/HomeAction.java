@@ -6,26 +6,20 @@ import org.springframework.stereotype.Controller;
 import com.opensymphony.xwork2.ActionSupport;
 
 
-
-
 @Controller
 @Scope("prototype")
-public class UserAction extends ActionSupport{
+public class HomeAction extends ActionSupport{
 
 	
-	public String loginUI(){
-
-		return "loginUI";
-		
+	public String index(){
+		return "index";
 	}
 	
-	public String login(){
-
-		return "toIndex";
-		
+	public String left(){
+		return "left";
 	}
 	
-	
-	
-	
+	public String right(){
+		return "right";
+	}
 }

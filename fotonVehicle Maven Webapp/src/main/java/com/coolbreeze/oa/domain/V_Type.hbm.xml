@@ -12,7 +12,10 @@
 
 		<property name="name"></property>
 		
-		<!-- 与车型配置的一对多关系 -->
+		<!-- 与品牌的多对一关系 -->
+		<many-to-one name="v_Brand" class="V_Brand" column="v_BrandId"></many-to-one>
+		
+		<!-- 与配置的一对多关系 -->
 		<set name="v_Configures">
 			<key column="v_TypeId"></key>
 			<one-to-many class="V_Configure"/>

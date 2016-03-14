@@ -14,16 +14,13 @@
 
   </head>
   
-  <body>
-    
-    
-    <s:a action="vehicleAction_addUI" >增加车型</s:a>
-    
-    <s:a action="vehicleAction_compare" >对比车型</s:a>
-    
-    
+   <body>
+   
+   	
+   
+   </body>
     
     
     
-  </body>
+  
 </html>

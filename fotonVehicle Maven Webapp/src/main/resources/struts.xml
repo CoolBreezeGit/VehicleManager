@@ -6,40 +6,44 @@
 
 
 	<constant name="struts.ui.theme" value="simple"></constant>
+	<constant name="struts.action.extension" value="action"></constant>
+	
 
 	<package name="/" extends="struts-default" namespace="/">
 	
+	
+		<action name="homeAction_*" class="homeAction" method="{1}">
+			<result name="{1}">
+				/WEB-INF/jsp/home/{1}.jsp
+			</result>
+		</action>
 	
 		<action name="userAction_*" class="userAction" method="{1}">
 			<result name="loginUI">
 				/WEB-INF/jsp/user/login.jsp
 			</result>
 			<result name="toIndex" type="redirectAction">
-				userAction_index
-			</result>
-			<result name="index">
-				/WEB-INF/jsp/index.jsp
+				homeAction_index
 			</result>
 		</action>
 
 
 		<action name="vehicleAction_*" class="vehicleAction" method="{1}">
-			<result name="list">
-				/WEB-INF/jsp/vehicle/list.jsp
-			</result>
-			<result name="redirectList" type="redirectAction">
-				vehicleAction_list
-			</result>
+			<result name="query">
+				/WEB-INF/jsp/vehicle/query.jsp
+			</result>			
 			<result name="addUI">
 				/WEB-INF/jsp/vehicle/addUI.jsp
 			</result>
 			<result name="editUI">
 				/WEB-INF/jsp/vehicle/editUI.jsp
 			</result>
-			
+			<result name="msg">
+				/WEB-INF/jsp/vehicle/msg.jsp
+			</result>			
 			<result name="compareUI">
 				/WEB-INF/jsp/vehicle/addUI.jsp
-			</result>
+			</result>			
 		</action>
 
 

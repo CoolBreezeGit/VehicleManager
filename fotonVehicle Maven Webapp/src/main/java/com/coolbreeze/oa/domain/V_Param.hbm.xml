@@ -10,8 +10,23 @@
             <generator class="native"/>
 		</id>
 
+		<!-- 与配置的一对一关系 -->
+		<one-to-one name="v_Configure" constrained="true"></one-to-one>
+
 		<!-- 基础参数 -->		
-		<many-to-one name="p_Base" unique="true" class="P_Base" column="p_BaseId"></many-to-one>
+		<property name="airconditioner"></property>
+		<property name="appearance"></property>
+		<property name="base"></property>
+		<property name="body"></property>
+		<property name="chair"></property>
+		<property name="chassis"></property>
+		<property name="control"></property>
+		<property name="engine"></property>
+		<property name="hightech"></property>
+		<property name="interior"></property>
+		<property name="multimedia"></property>
+		<property name="security"></property>
+		
 		
 	</class>
 	

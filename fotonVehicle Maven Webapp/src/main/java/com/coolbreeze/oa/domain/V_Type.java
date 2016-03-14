@@ -12,7 +12,17 @@ public class V_Type {
 
 	private String name;
 
-	private Set<V_Configure> v_Configures=new HashSet<V_Configure>();	//该车型下的车型配置
+	private V_Brand v_Brand;		//对应的品牌
+
+	private Set<V_Configure> v_Configures = new HashSet<V_Configure>(); // 该车型下的车型配置
+
+	public V_Brand getV_Brand() {
+		return v_Brand;
+	}
+
+	public void setV_Brand(V_Brand v_Brand) {
+		this.v_Brand = v_Brand;
+	}
 
 	public Long getId() {
 		return id;
@@ -37,6 +47,5 @@ public class V_Type {
 	public void setV_Configures(Set<V_Configure> v_Configures) {
 		this.v_Configures = v_Configures;
 	}
-
 
 }

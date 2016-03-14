@@ -12,7 +12,11 @@
 
 		<property name="name"></property>
 		
-		<many-to-one name="v_Param" unique="true" class="V_Param" column="v_ParamId"></many-to-one>
+		<!-- 与车型的多对一关系 -->
+		<many-to-one name="v_Type" class="V_Type" column="v_TypeId"></many-to-one>
+		
+		<!-- 与参数的一对一关系 -->
+		<one-to-one name="v_Param"></one-to-one>
 		
 	</class>
 	

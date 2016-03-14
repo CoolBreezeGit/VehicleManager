@@ -7,6 +7,16 @@ public class V_Param {
 
 	private Long id;
 
+	private V_Configure v_Configure;	//对应的配置
+
+	public V_Configure getV_Configure() {
+		return v_Configure;
+	}
+
+	public void setV_Configure(V_Configure v_Configure) {
+		this.v_Configure = v_Configure;
+	}
+
 	// 显示字段-------------------------------------------------------------------------
 	// 基本参数
 	private String base;

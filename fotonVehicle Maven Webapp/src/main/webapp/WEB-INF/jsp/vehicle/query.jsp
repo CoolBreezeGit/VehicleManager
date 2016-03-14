@@ -6,9 +6,61 @@
 <html>
 <head>
 <title>增加车型</title>
+
+<script src="${pageContext.request.contextPath}/script/jquery-2.1.4.js"></script>
+<script type="text/javascript">
+	$(function() {
+		//ajax级联查询
+		$("#s_brand").change(function() {
+			alert($(this).val());
+
+/* 			$.ajax({
+				type : "POST",
+				url : "${pageContext.request.contextPath}/vehicleAction_query",
+				data : "v_BrandId="+$(this).val(),
+				success : function(msg) {
+					alert("Data Saved: " + msg);
+				}
+			}); */
+
+		});
+
+		$("#s_type").change(function() {
+			alert("change");
+		});
+
+		$("#s_cofigure").change(function() {
+			alert("change");
+		});
+
+		//得到的数据填充表格
+	});
+</script>
+
 </head>
 
 <body>
+	<div id="column_1">
+		<div>
+			<label>品牌</label>
+			<s:select id="s_brand" list="#v_BrandList" listKey="id" listValue="name"></s:select>
+		</div>
+	</div>
+
+	<div id="column_2">
+		<div>
+			<label>车型</label> <select id="s_type"></select>
+		</div>
+	</div>
+
+	<div id="column_3">
+		<div>
+			<label>配置</label> <select id="s_configure"></select>
+		</div>
+	</div>
+
+	<h3>=====================================================================</h3>
+
 
 	<div>
 		<div>

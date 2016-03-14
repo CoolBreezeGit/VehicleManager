@@ -12,26 +12,24 @@
 	$(function() {
 
 		$("#vehicleAction_add").click(function() {
-
-			var paramArr = new Array();
-			
-			alert($("#paramData").children().length);
-			$("#paramData").children().each(function(){
-				
+			var $inputs=$("input[type=hidden]");
+			$("#paramData").children().each(function(index){
+				if((index+1)%2==0){
+					var s="";
+					var size=$(this).find("input").length;
+					$(this).find("input").each(function(i){
+						if(i<size-1){
+							s=s+$(this).val()+"-";
+						}else{
+							s=s+$(this).val();
+						}
+					});					
+					$($inputs[(index+1)/2-1]).val(s);
+				}			
 			});
 			
-			/*
-			$("#base").find("input").each(function() {
-				base = base + "," + $(this).val();
-			});
+			$("#dataForm").submit();
 
-			alert(base);
-			$("input[name=v_Param\\.base]").val(base);
-			//$("input[type=hidden]").val(base);
-			alert($("input[type=hidden]").val());
-
-			//$("#dataForm").submit();
-			*/
 		});
 
 	});
@@ -45,7 +43,7 @@
 	<input type="submit" id="vehicleAction_add" value="保存"></input>
 
 
-	<s:form id="dataForm" action="vehicleAction_test" method="post">
+	<s:form id="dataForm" action="vehicleAction_add" method="post">
 
 		<input type="hidden" name="v_Param.base">
 		<input type="hidden" name="v_Param.body">
@@ -59,50 +57,42 @@
 		<input type="hidden" name="v_Param.security">
 		<input type="hidden" name="v_Param.multimedia">
 		<input type="hidden" name="v_Param.hightech">
-		
+
 
 		<div id="column_1">
 			<div>
 				<h2>品牌</h2>
-				<input type="text" name="v_Brand.name" value=""
-					id="vehicleAction_add_v_Brand_name" />
+				<input type="text" name="v_Brand.name"/>
 			</div>
 		</div>
 
 		<div id="column_2">
 			<div>
 				<h2>车型</h2>
-				<input type="text" name="v_Type" value=""
-					id="vehicleAction_add_v_Type_name" />
+				<input type="text" name="v_Type.name"/>
 			</div>
 		</div>
 
 		<div id="column_3">
 			<div>
 				<h2>配置</h2>
-				<input type="text" name="v_Configure" value=""
-					id="vehicleAction_add_v_Configure_name" />
+				<input type="text" name="v_Configure.name"/> 
 			</div>
 		</div>
 
 	</s:form>
 
-
 	<div id="paramData">
-		
+
 		<div>
 			<div>
 				<h3>基本参数</h3>
 			</div>
-		</div>		
+		</div>
 
 		<div id="base">
 			<table cellpadding="0" cellspacing="1">
 				<tbody>
-					<tr>
-						<td>车型</td>
-						<td><input type="text" /></td>
-					</tr>
 					<tr>
 						<td>指导价</td>
 					</tr>
@@ -148,7 +138,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>车身参数</h3>
@@ -211,7 +201,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>发动机</h3>
@@ -286,7 +276,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>底盘</h3>
@@ -346,7 +336,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>操控配置</h3>
@@ -400,7 +390,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>外观</h3>
@@ -526,7 +516,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>内饰配置</h3>
@@ -634,7 +624,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>座椅配置</h3>
@@ -736,7 +726,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>空调/冰箱</h3>
@@ -772,7 +762,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>安全配置</h3>
@@ -847,7 +837,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>多媒体配置</h3>
@@ -907,7 +897,7 @@
 				</tbody>
 			</table>
 		</div>
-		
+
 		<div>
 			<div>
 				<h3>高科技配置</h3>
@@ -949,8 +939,19 @@
 				</tbody>
 			</table>
 		</div>
-	
+
 	</div>
+	<script type="text/javascript">
+		var i = 1;
+		$("#paramData").children().each(function() {
+			if (i % 2 == 0) {
+				$(this).find("tr").each(function() {
+					$(this).append('<td><input type="text" /></td>');
+				});
+			}
+			i++;
+		});
+	</script>
 </body>
 </html>
 
