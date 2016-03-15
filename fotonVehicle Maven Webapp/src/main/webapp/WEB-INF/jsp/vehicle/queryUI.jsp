@@ -11,30 +11,55 @@
 <script type="text/javascript">
 	$(function() {
 		//ajax级联查询
-		$("#s_brand").change(function() {
-			alert($(this).val());
-
-/* 			$.ajax({
-				type : "POST",
-				url : "${pageContext.request.contextPath}/vehicleAction_query",
-				data : "v_BrandId="+$(this).val(),
-				success : function(msg) {
-					alert("Data Saved: " + msg);
-				}
-			}); */
-
+		$("#v_Brand").change(function(){
+			query("v_Type", "v_Brand",this);
 		});
 
-		$("#s_type").change(function() {
-			alert("change");
+		$("#v_Type").change(function(){
+			query("v_Configure","v_Type",this);
 		});
 
-		$("#s_cofigure").change(function() {
-			alert("change");
-		});
+		//$("#s_cofigure").change(query("v_Type","v_Brand"));
 
 		//得到的数据填充表格
 	});
+	
+	function query(controlId, selfId,_this) {
+
+		//清除车型选项的项目
+		$("#" + controlId).empty();
+		$("#" + controlId).append("<option>请选择车型</option>");
+
+		alert($(_this).val());
+		
+		//如果是选择默认项目，则设置下级选项不可选
+		if ($(_this).val() == "" || $(_this).val()==null) {
+			alert("null");
+			$("#" + controlId).attr("disabled", true);
+			return;
+		}
+
+		//发起ajax请求，填充下级选项数据
+		$.ajax({
+			type : "POST",
+			url : "${pageContext.request.contextPath}/vehicleAction_query",
+			data : selfId + ".id=" + $(_this).val(),
+			success : function(data) {
+
+				data = eval('(' + data + ')');
+				data = data.list;
+
+				for (var i = 0; i < data.length; i++) {
+					$("#" + controlId).append(
+							"<option value="+data[i].id+">" + data[i].name
+									+ "</option>");
+				}
+				//设置车型选项可选
+				$("#" + controlId).attr("disabled", false);
+			}
+		});
+
+	}
 </script>
 
 </head>
@@ -43,19 +68,24 @@
 	<div id="column_1">
 		<div>
 			<label>品牌</label>
-			<s:select id="s_brand" list="#v_BrandList" listKey="id" listValue="name"></s:select>
+			<s:select id="v_Brand" list="#v_BrandList" listKey="id"
+				listValue="name" headerKey="" headerValue="请选择品牌"></s:select>
 		</div>
 	</div>
 
 	<div id="column_2">
 		<div>
-			<label>车型</label> <select id="s_type"></select>
+			<label>车型</label> <select id="v_Type" disabled="disabled">
+				<option value="aaa">请选择车型</option>
+			</select>
 		</div>
 	</div>
 
 	<div id="column_3">
 		<div>
-			<label>配置</label> <select id="s_configure"></select>
+			<label>配置</label> <select id="v_Configure" disabled="disabled">
+				<option>请选择配置</option>
+			</select>
 		</div>
 	</div>
 

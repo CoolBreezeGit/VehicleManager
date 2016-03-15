@@ -15,9 +15,10 @@ import com.coolbreeze.oa.service.V_TypeService;
 @Service
 public class V_ConfigureServiceImpl extends BaseDaoImpl<V_Configure> implements V_ConfigureService{
 
-	public List<V_Type> findByTypeId(Long typeId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<V_Configure> findByTypeId(Long typeId) {
+		return getSession().createQuery("From V_Configure Where v_Type.id is ?")
+				.setParameter(0, typeId)	//
+				.list();		//
 	}
 
 }

@@ -1,20 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.coolbreeze</groupId>
-  <artifactId>fotonVehicle</artifactId>
-  <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>fotonVehicle Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.coolbreeze</groupId>
+	<artifactId>fotonVehicle</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>fotonVehicle Maven Webapp</name>
+	<url>http://maven.apache.org</url>
 
 
 
-<properties>
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>4.1.4.RELEASE</spring.version>
 		<hibernate.version>3.6.9.Final</hibernate.version>
-		<struts2.version>2.3.20</struts2.version>
+		<struts2.version>2.1.8</struts2.version>
 		<jackson.version>2.5.0</jackson.version>
 	</properties>
 
@@ -128,6 +128,13 @@
 			<version>${struts2.version}</version>
 		</dependency>
 
+		<!-- struts2 json -->
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-json-plugin</artifactId>
+			<version>${struts2.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-convention-plugin</artifactId>
@@ -176,11 +183,8 @@
 		</dependency>
 
 		<!-- oracle连接 -->
-<!-- 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.1.0</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc6</artifactId> 
+			<version>11.2.0.1.0</version> </dependency> -->
 
 		<!-- c3p0连接池包 -->
 		<dependency>
@@ -191,11 +195,8 @@
 		<!-- c3p0链接池包 -->
 
 		<!-- json -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.3</version>
-		</dependency>
+		<!-- <dependency> <groupId>com.alibaba</groupId> <artifactId>fastjson</artifactId> 
+			<version>1.2.3</version> </dependency> -->
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -237,12 +238,5 @@
 
 	</dependencies>
 
-
-
-
-
-  <build>
-    <finalName>fotonVehicle</finalName>
-  </build>
 
 </project>

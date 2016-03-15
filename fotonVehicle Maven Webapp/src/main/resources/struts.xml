@@ -6,10 +6,11 @@
 
 
 	<constant name="struts.ui.theme" value="simple"></constant>
-	<constant name="struts.action.extension" value="action"></constant>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<!-- <constant name="struts.action.extension" value="action"></constant> -->
 	
 
-	<package name="/" extends="struts-default" namespace="/">
+	<package name="/" extends="json-default" namespace="/">
 	
 	
 		<action name="homeAction_*" class="homeAction" method="{1}">
@@ -28,10 +29,20 @@
 		</action>
 
 
-		<action name="vehicleAction_*" class="vehicleAction" method="{1}">
-			<result name="query">
-				/WEB-INF/jsp/vehicle/query.jsp
-			</result>			
+		<action name="vehicleAction_*" class="vehicleAction" method="{1}" >
+			<result name="queryUI">
+				/WEB-INF/jsp/vehicle/queryUI.jsp
+			</result>	
+				
+			<!-- 对于ajax请求，返回json结果 -->
+			<result name="query" type="json">
+				<param name="noCache">true</param>
+				<param name="contentType">text/html</param>
+							
+				<param name="root">responseJson</param> 
+				
+			</result>	
+			
 			<result name="addUI">
 				/WEB-INF/jsp/vehicle/addUI.jsp
 			</result>
@@ -45,9 +56,6 @@
 				/WEB-INF/jsp/vehicle/addUI.jsp
 			</result>			
 		</action>
-
-
-
 
 	</package>
 

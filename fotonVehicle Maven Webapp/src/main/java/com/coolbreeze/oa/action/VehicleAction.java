@@ -1,9 +1,13 @@
 package com.coolbreeze.oa.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.struts2.json.annotations.JSON;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -40,28 +44,83 @@ public class VehicleAction extends ActionSupport {
 
 	private String msg;
 
-	public String query() {
+	public String queryUI() {
 
-		if(v_Brand != null){
-			
-			List<V_Type> v_TypeList=v_TypeService.findByBrandId(v_Brand.getId());
-			ActionContext.getContext().put("v_TypeList", v_TypeList);
-			
-		}else if(v_Type != null){
-			
-			List<V_Type> v_ConfigureList=v_ConfigureService.findByTypeId(v_Type.getId());
-			ActionContext.getContext().put("v_ConfigureList", v_ConfigureList);
-			
-		}else if(v_Configure != null){
-			
-			V_Param v_Param=null;
-			ActionContext.getContext().put("v_Param", v_Param);
-			
-		}else{
-			List<V_Brand> v_BrandList=v_BrandService.findAll();
-			ActionContext.getContext().put("v_BrandList", v_BrandList);
-		}		
+		List<V_Brand> v_BrandList = v_BrandService.findAll();
+		ActionContext.getContext().put("v_BrandList", v_BrandList);
+
+		return "queryUI";
+	}
+
+	/*
+	 * json map对象
+	 */
+	private Map responseJson;
+
+	public Map getResponseJson() {
+		return responseJson;
+	}
+
+	public void setResponseJson(Map responseJson) {
+		this.responseJson = responseJson;
 		
+		
+	}
+
+	//向ResponseJson中填充数据,,,???????如何抽象方法
+/*	public <void setData(List list){
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		List<Map<String, String>> idname = new ArrayList<Map<String, String>>();
+
+		for (int i=0;i<list.size();i++) {
+			Map<String, String> m = new HashMap<String, String>();
+			m.put("id", list.get(i).getId().toString());
+			m.put("name", v_Type.getName());
+			idname.add(m);
+		}
+		map.put("list", idname);
+	}*/
+	
+	public String query() {
+		/*
+		 * 返回这样形式的json：
+		 */
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		if (v_Brand != null) {
+			List<V_Type> v_TypeList = v_TypeService.findByBrandId(v_Brand
+					.getId());
+
+			List<Map<String, String>> idname = new ArrayList<Map<String, String>>();
+
+			for (V_Type v_Type : v_TypeList) {
+				Map<String, String> m = new HashMap<String, String>();
+				m.put("id", v_Type.getId().toString());
+				m.put("name", v_Type.getName());
+				idname.add(m);
+			}
+			map.put("list", idname);
+
+		} else if (v_Type != null) {
+			List<V_Configure> v_ConfigureList = v_ConfigureService
+					.findByTypeId(v_Type.getId());
+
+			List<Map<String, String>> idname = new ArrayList<Map<String, String>>();
+
+			for (V_Configure v_Configure : v_ConfigureList) {
+				Map<String, String> m = new HashMap<String, String>();
+				m.put("id", v_Configure.getId().toString());
+				m.put("name", v_Configure.getName());
+				idname.add(m);
+			}
+			map.put("list", idname);
+
+		} else if (v_Configure != null) {
+
+		}
+
+		this.setResponseJson(map);
 		return "query";
 	}
 
@@ -70,23 +129,27 @@ public class VehicleAction extends ActionSupport {
 	}
 
 	public String add() {
-		
+
 		System.out.println(v_Param.getBase());
 		System.out.println(v_Brand.getName());
+		System.out.println(v_Type.getName());
+		System.out.println(v_Configure.getName());
+		// v_ParamService.save(v_Param);
 
-		//v_ParamService.save(v_Param);
-
-		v_Configure.setV_Param(v_Param);
-		//v_ConfigureService.save(v_Configure);
-
-		v_Type.getV_Configures().add(v_Configure);
-		//v_TypeService.save(v_Type);
-
-		v_Brand.getV_Types().add(v_Type);
 		v_BrandService.save(v_Brand);
+		// v_Brand.getV_Types().add(v_Type);
 
-		msg="添加成功";
-		
+		v_Type.setV_Brand(v_Brand);
+		v_TypeService.save(v_Type);
+
+		v_Configure.setV_Type(v_Type);
+		v_ConfigureService.save(v_Configure);
+
+		v_Param.setV_Configure(v_Configure);
+		v_ParamService.save(v_Param);
+
+		msg = "添加成功";
+
 		return "msg";
 	}
 

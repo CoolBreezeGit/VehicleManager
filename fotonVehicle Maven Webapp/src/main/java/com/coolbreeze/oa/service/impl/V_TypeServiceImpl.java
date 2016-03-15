@@ -14,8 +14,9 @@ import com.coolbreeze.oa.service.V_TypeService;
 public class V_TypeServiceImpl extends BaseDaoImpl<V_Type> implements V_TypeService{
 
 	public List<V_Type> findByBrandId(Long brandId) {
-		// TODO Auto-generated method stub
-		return null;
+		return getSession().createQuery("From V_Type Where v_Brand.id is ?")
+							.setParameter(0, brandId)	//
+							.list();		//
 	}
 
 }

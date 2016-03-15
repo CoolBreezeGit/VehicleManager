@@ -18,7 +18,7 @@
 
 <body>
 	
-	<s:a action="vehicleAction_query">查询</s:a>
+	<s:a action="vehicleAction_queryUI">查询</s:a>
 	<br/>
 	<s:a action="vehicleAction_addUI">添加</s:a>
 	<br/>
