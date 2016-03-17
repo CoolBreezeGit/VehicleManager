@@ -5,7 +5,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>增加车型</title>
+<title>查询车型</title>
 
 <script src="${pageContext.request.contextPath}/script/jquery-2.1.4.js"></script>
 <script type="text/javascript">
@@ -19,23 +19,74 @@
 			query("v_Configure","v_Type",this);
 		});
 
-		//$("#s_cofigure").change(query("v_Type","v_Brand"));
+		$("#v_Configure").change(function(){
+			alert("chage");
+			
+			if ($(this).val() == "" || $(this).val()==null) {
+				return;
+			}
+			 
+			$.ajax({
+				type : "POST",
+				url : "${pageContext.request.contextPath}/vehicleAction_query",
+				data : "v_Configure.id=" + $(this).val(),
+				success : function(data) {
+
+					alert(data);
+
+					data = eval('(' + data + ')');
+					//data = data.base;
+					
+					//alert(data);
+					
+	 				var i = 1;
+					$("#paramData").children().each(function() {
+						if (i % 2 == 0) {
+							/* 
+							var tmp=data[this.id];
+							var sArr=tmp.split("-");
+							alert(sArr);
+							var  j=0;
+							$(this).find("input").each(function(index) {
+								
+								if(i==2 && index==0){
+									$(this).val(sArr[j]);	
+								}
+								
+								$(this).val(sArr[j]);
+								j++; 
+							});
+							*/
+						}
+						i++;
+					}); 
+					
+				}
+			});
+		});
 
 		//得到的数据填充表格
 	});
 	
 	function query(controlId, selfId,_this) {
 
-		//清除车型选项的项目
+		//清除控制选项及下级选项的项目
 		$("#" + controlId).empty();
-		$("#" + controlId).append("<option>请选择车型</option>");
+		$("#" + controlId).append("<option value=''>请选择</option>");
+		if(selfId=="v_Brand"){
+			$("#v_Configure").empty();
+			$("#v_Configure").append("<option value=''>请选择</option>");
+		}
 
-		alert($(_this).val());
+		//alert($(_this).val());
 		
 		//如果是选择默认项目，则设置下级选项不可选
 		if ($(_this).val() == "" || $(_this).val()==null) {
 			alert("null");
 			$("#" + controlId).attr("disabled", true);
+			if(selfId=="v_Brand"){
+				$("#v_Configure").attr("disabled",true);
+			}
 			return;
 		}
 
@@ -45,7 +96,7 @@
 			url : "${pageContext.request.contextPath}/vehicleAction_query",
 			data : selfId + ".id=" + $(_this).val(),
 			success : function(data) {
-
+				
 				data = eval('(' + data + ')');
 				data = data.list;
 
@@ -54,7 +105,7 @@
 							"<option value="+data[i].id+">" + data[i].name
 									+ "</option>");
 				}
-				//设置车型选项可选
+				//设置控制选项可选
 				$("#" + controlId).attr("disabled", false);
 			}
 		});
@@ -69,14 +120,14 @@
 		<div>
 			<label>品牌</label>
 			<s:select id="v_Brand" list="#v_BrandList" listKey="id"
-				listValue="name" headerKey="" headerValue="请选择品牌"></s:select>
+				listValue="name" headerKey="" headerValue="请选择"></s:select>
 		</div>
 	</div>
 
 	<div id="column_2">
 		<div>
 			<label>车型</label> <select id="v_Type" disabled="disabled">
-				<option value="aaa">请选择车型</option>
+				<option value="">请选择</option>
 			</select>
 		</div>
 	</div>
@@ -84,7 +135,7 @@
 	<div id="column_3">
 		<div>
 			<label>配置</label> <select id="v_Configure" disabled="disabled">
-				<option>请选择配置</option>
+				<option>请选择</option>
 			</select>
 		</div>
 	</div>
@@ -92,16 +143,15 @@
 	<h3>=====================================================================</h3>
 
 
-	<div>
+	<div id="paramData">
 		<div>
 			<h3>基本参数</h3>
 		</div>
-		<div>
+		<div id="base">
 			<table cellpadding="0" cellspacing="1">
 				<tbody>
 					<tr>
 						<td>车型</td>
-						<td><input type="text" /></td>
 					</tr>
 					<tr>
 						<td>指导价</td>
@@ -939,5 +989,18 @@
 			</table>
 		</div>
 	</div>
+	
+	<!-- 添加输入框 -->
+	<script type="text/javascript">
+		var i = 1;
+		$("#paramData").children().each(function() {
+			if (i % 2 == 0) {
+				$(this).find("tr").each(function() {
+					$(this).append('<td><input type="text" readonly="readonly"></input></td>');
+				});
+			}
+			i++;
+		});
+	</script>
 </body>
 </html>

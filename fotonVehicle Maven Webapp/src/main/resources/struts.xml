@@ -38,8 +38,8 @@
 			<result name="query" type="json">
 				<param name="noCache">true</param>
 				<param name="contentType">text/html</param>
-							
-				<param name="root">responseJson</param> 
+				
+				<param name="root">responseJson</param>
 				
 			</result>	
 			

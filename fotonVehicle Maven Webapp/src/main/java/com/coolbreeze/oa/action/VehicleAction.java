@@ -7,10 +7,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.json.annotations.JSON;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.coolbreeze.fotonVehicle.utils.MyBeanUtils;
 import com.coolbreeze.oa.domain.V_Brand;
 import com.coolbreeze.oa.domain.V_Configure;
 import com.coolbreeze.oa.domain.V_Param;
@@ -63,25 +67,35 @@ public class VehicleAction extends ActionSupport {
 
 	public void setResponseJson(Map responseJson) {
 		this.responseJson = responseJson;
-		
-		
 	}
 
-	//向ResponseJson中填充数据,,,???????如何抽象方法
-/*	public <void setData(List list){
-		Map<String, Object> map = new HashMap<String, Object>();
+	/*
+	 * 使用json-lib反而不太方便？？？
+	 * 
+	 * private JSONArray jsonArr; private JSONObject jsonObj;
+	 * 
+	 * public JSONArray getJsonArr() { return jsonArr; }
+	 * 
+	 * public void setJsonArr(JSONArray jsonArr) { this.jsonArr = jsonArr; }
+	 * 
+	 * public JSONObject getJsonObj() { return jsonObj; }
+	 * 
+	 * public void setJsonObj(JSONObject jsonObj) { this.jsonObj = jsonObj; }
+	 */
 
-		List<Map<String, String>> idname = new ArrayList<Map<String, String>>();
+	// 向ResponseJson中填充数据,,,???????如何抽象方法
+	/*
+	 * public <void setData(List list){ Map<String, Object> map = new
+	 * HashMap<String, Object>();
+	 * 
+	 * List<Map<String, String>> idname = new ArrayList<Map<String, String>>();
+	 * 
+	 * for (int i=0;i<list.size();i++) { Map<String, String> m = new
+	 * HashMap<String, String>(); m.put("id", list.get(i).getId().toString());
+	 * m.put("name", v_Type.getName()); idname.add(m); } map.put("list",
+	 * idname); }
+	 */
 
-		for (int i=0;i<list.size();i++) {
-			Map<String, String> m = new HashMap<String, String>();
-			m.put("id", list.get(i).getId().toString());
-			m.put("name", v_Type.getName());
-			idname.add(m);
-		}
-		map.put("list", idname);
-	}*/
-	
 	public String query() {
 		/*
 		 * 返回这样形式的json：
@@ -100,7 +114,18 @@ public class VehicleAction extends ActionSupport {
 				m.put("name", v_Type.getName());
 				idname.add(m);
 			}
+
 			map.put("list", idname);
+			this.setResponseJson(map);
+
+			/*
+			 * List<V_Type> copyList = new ArrayList<V_Type>(); for (V_Type
+			 * v_Type : v_TypeList) { V_Type copy = new V_Type();
+			 * copy.setId(v_Type.getId()); copy.setName(v_Type.getName());
+			 * copyList.add(copy); } this.jsonArr =
+			 * JSONArray.fromObject(copyList);
+			 * System.out.println(jsonArr.toString());
+			 */
 
 		} else if (v_Type != null) {
 			List<V_Configure> v_ConfigureList = v_ConfigureService
@@ -114,13 +139,29 @@ public class VehicleAction extends ActionSupport {
 				m.put("name", v_Configure.getName());
 				idname.add(m);
 			}
+			
 			map.put("list", idname);
+			this.setResponseJson(map);
+
+			/*
+			 * List<V_Configure> copyList = new ArrayList<V_Configure>(); for
+			 * (V_Configure v_Configure : v_ConfigureList) { V_Configure copy =
+			 * new V_Configure(); copy.setId(v_Configure.getId());
+			 * copy.setName(v_Configure.getName()); copyList.add(copy); }
+			 * this.jsonArr = JSONArray.fromObject(copyList);
+			 * System.out.println(jsonArr.toString())
+			 */;
 
 		} else if (v_Configure != null) {
+			V_Param v_Param = v_ParamService.findByConfigureId(v_Configure
+					.getId());
 
+			//将v_Param 封装成Map
+			this.setResponseJson(MyBeanUtils.v_ParamToMap(v_Param));
+			//System.out.println(this.responseJson.get("id"));
+			
 		}
 
-		this.setResponseJson(map);
 		return "query";
 	}
 
