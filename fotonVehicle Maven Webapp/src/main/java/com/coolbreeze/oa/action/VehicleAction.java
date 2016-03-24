@@ -69,32 +69,6 @@ public class VehicleAction extends ActionSupport {
 		this.responseJson = responseJson;
 	}
 
-	/*
-	 * 使用json-lib反而不太方便？？？
-	 * 
-	 * private JSONArray jsonArr; private JSONObject jsonObj;
-	 * 
-	 * public JSONArray getJsonArr() { return jsonArr; }
-	 * 
-	 * public void setJsonArr(JSONArray jsonArr) { this.jsonArr = jsonArr; }
-	 * 
-	 * public JSONObject getJsonObj() { return jsonObj; }
-	 * 
-	 * public void setJsonObj(JSONObject jsonObj) { this.jsonObj = jsonObj; }
-	 */
-
-	// 向ResponseJson中填充数据,,,???????如何抽象方法
-	/*
-	 * public <void setData(List list){ Map<String, Object> map = new
-	 * HashMap<String, Object>();
-	 * 
-	 * List<Map<String, String>> idname = new ArrayList<Map<String, String>>();
-	 * 
-	 * for (int i=0;i<list.size();i++) { Map<String, String> m = new
-	 * HashMap<String, String>(); m.put("id", list.get(i).getId().toString());
-	 * m.put("name", v_Type.getName()); idname.add(m); } map.put("list",
-	 * idname); }
-	 */
 
 	public String query() {
 		/*
@@ -118,14 +92,6 @@ public class VehicleAction extends ActionSupport {
 			map.put("list", idname);
 			this.setResponseJson(map);
 
-			/*
-			 * List<V_Type> copyList = new ArrayList<V_Type>(); for (V_Type
-			 * v_Type : v_TypeList) { V_Type copy = new V_Type();
-			 * copy.setId(v_Type.getId()); copy.setName(v_Type.getName());
-			 * copyList.add(copy); } this.jsonArr =
-			 * JSONArray.fromObject(copyList);
-			 * System.out.println(jsonArr.toString());
-			 */
 
 		} else if (v_Type != null) {
 			List<V_Configure> v_ConfigureList = v_ConfigureService
@@ -143,14 +109,6 @@ public class VehicleAction extends ActionSupport {
 			map.put("list", idname);
 			this.setResponseJson(map);
 
-			/*
-			 * List<V_Configure> copyList = new ArrayList<V_Configure>(); for
-			 * (V_Configure v_Configure : v_ConfigureList) { V_Configure copy =
-			 * new V_Configure(); copy.setId(v_Configure.getId());
-			 * copy.setName(v_Configure.getName()); copyList.add(copy); }
-			 * this.jsonArr = JSONArray.fromObject(copyList);
-			 * System.out.println(jsonArr.toString())
-			 */;
 
 		} else if (v_Configure != null) {
 			V_Param v_Param = v_ParamService.findByConfigureId(v_Configure
@@ -166,28 +124,50 @@ public class VehicleAction extends ActionSupport {
 	}
 
 	public String addUI() {
+		
+		List<V_Brand> v_BrandList = v_BrandService.findAll();
+		ActionContext.getContext().put("v_BrandList", v_BrandList);
+		
 		return "addUI";
 	}
 
 	public String add() {
 
-		System.out.println(v_Param.getBase());
-		System.out.println(v_Brand.getName());
-		System.out.println(v_Type.getName());
-		System.out.println(v_Configure.getName());
-		// v_ParamService.save(v_Param);
+		
+		System.out.println("name:"+v_Brand.getName());
+		System.out.println("id:"+v_Brand.getId());
+		
+		System.out.println("name:"+v_Type.getName());
+		System.out.println("id:"+v_Type.getId());
+	
+		
+		//新添加了品牌
+		if(v_Brand.getId()==null){
+			v_BrandService.save(v_Brand);
+			//必然要新添加车型
+			v_Type.setV_Brand(v_Brand);
+			v_TypeService.save(v_Type) ;
 
-		v_BrandService.save(v_Brand);
-		// v_Brand.getV_Types().add(v_Type);
-
-		v_Type.setV_Brand(v_Brand);
-		v_TypeService.save(v_Type);
-
-		v_Configure.setV_Type(v_Type);
+			v_Configure.setV_Type(v_Type);
+			
+		}else{	//使用原来的品牌
+			//新添加了车型
+			if(v_Type.getId()==null){
+				v_Type.setV_Brand(v_BrandService.getById(v_Brand.getId()));
+				v_TypeService.save(v_Type) ;
+				v_Configure.setV_Type(v_Type);
+				
+			}else{	//使用原来的车型
+				v_Configure.setV_Type(v_TypeService.getById(v_Type.getId()));
+			}
+		}	
+		
+		
 		v_ConfigureService.save(v_Configure);
 
 		v_Param.setV_Configure(v_Configure);
 		v_ParamService.save(v_Param);
+
 
 		msg = "添加成功";
 
@@ -199,6 +179,15 @@ public class VehicleAction extends ActionSupport {
 		return "compareUI";
 	}
 
+/*	
+	public void test(){
+		System.out.println("test");
+		V_Brand vb=new V_Brand();
+		vb.setId(2L);		//自己设置id也无效
+		vb.setName("福田");
+		v_BrandService.save(vb);
+	}*/
+	
 	// ---------------------------------------------------
 
 	public String getMsg() {

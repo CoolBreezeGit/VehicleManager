@@ -108,11 +108,13 @@
 							var j = 0;
 							$(this).find("input").each(function(index) {
 
+								//填充第一个车型项目：品牌+车型+配置
 								if (i == 2 && index == 0) {
 									$(this).val($("#v_Brand option:selected").html()
 											+" "+$("#v_Type option:selected").html()
 											+" "+$("#v_Configure option:selected").html());
 								}else{
+									//填充获取的数据参数
 									$(this).val(sArr[j]);
 									j++;
 								}

@@ -11,7 +11,56 @@
 <script>
 	$(function() {
 
+		//ajax级联查询
+		$("#v_Brand").change(function() {
+			query("v_Type", "v_Brand", this);
+		});
+		
+		function query(controlId, selfId, _this) {
+
+			//清除控制选项项目
+			$("#" + controlId).empty();
+			$("#" + controlId).append("<option value=''></option>");
+
+			//发起ajax请求，填充下级选项数据
+			$.ajax({
+				type : "POST",
+				url : "${pageContext.request.contextPath}/vehicleAction_query",
+				data : selfId + ".id=" + $(_this).val(),
+				success : function(data) {
+
+					data = eval('(' + data + ')');
+					data = data.list;
+
+					for (var i = 0; i < data.length; i++) {
+						$("#" + controlId).append(
+								"<option value="+data[i].id+">" + data[i].name
+										+ "</option>");
+					}
+				}
+			});
+		}
+		
+		
+		
+		//点击保存按钮，处理函数
 		$("#vehicleAction_add").click(function() {
+			
+			//校验：品牌，车型，配置不能为空
+			if($("[name=v_Brand\\.name]").val()==""){
+				alert("品牌不能为空！");
+				return;
+			}
+			if($("[name=v_Type\\.name]").val()==""){
+				alert("车型不能为空！");
+				return;
+			}
+			if($("[name=v_Configure\\.name]").val()==""){
+				alert("配置不能为空！");
+				return;
+			}
+		
+			
 			var $inputs=$("input[type=hidden]");
 			$("#paramData").children().each(function(index){
 				if((index+1)%2==0){
@@ -31,8 +80,30 @@
 			$("#dataForm").submit();
 
 		});
+		
+		//对于品牌，车型选择已有数据的前提下还能进行输入导致错误的情况的处理
+		$("#v_Brand").change(function(){
+			changeFun(this);
+		});
+
+		$("#v_Type").change(function(){
+			changeFun(this);
+		});
 
 	});
+	
+	function changeFun(_this){
+		//_this.parentNode.nextSibling.value=_this.options[_this.options.selectedIndex].text;
+		
+		$(_this).parent().next().val($(_this).children(":selected").text());
+				
+		if($(_this).val()!=""){
+			$(_this).parent().next().attr("disabled","disabled");
+		}else{
+			$(_this).parent().next().removeAttr("disabled");
+		}
+		
+	}
 </script>
 
 
@@ -62,14 +133,26 @@
 		<div id="column_1">
 			<div>
 				<h2>品牌</h2>
-				<input type="text" name="v_Brand.name"/>
+				<div style="position:relative;">
+				 <span style="margin-left:100px;width:18px;overflow:hidden;">
+				 <s:select list="#v_BrandList" listKey="id" listValue="name" headerKey="" headerValue=""
+				  id="v_Brand"  name="v_Brand.id" style="width:118px;margin-left:-100px" 
+				  >				 	
+				 </s:select></span><input name="v_Brand.name" style="width:100px;height:20px;position:absolute;left:0px;">
+ 				</div>
 			</div>
 		</div>
 
 		<div id="column_2">
 			<div>
 				<h2>车型</h2>
-				<input type="text" name="v_Type.name"/>
+				<div style="position:relative;">
+				 <span style="margin-left:100px;width:18px;overflow:hidden;">
+				 <select id="v_Type" name="v_Type.id" style="width:118px;margin-left:-100px" 
+				 >
+				 	<option></option>
+				 </select></span><input name="v_Type.name" style="width:100px;height:20px;position:absolute;left:0px;">
+ 				</div>
 			</div>
 		</div>
 
