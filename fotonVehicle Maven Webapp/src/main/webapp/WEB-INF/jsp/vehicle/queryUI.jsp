@@ -9,84 +9,38 @@
 
 <script src="${pageContext.request.contextPath}/script/jquery-2.1.4.js"></script>
 <script type="text/javascript">
+	
 	$(function() {
 		//ajax级联查询
-		$("#v_Brand").change(function(){
-			query("v_Type", "v_Brand",this);
+		$("#v_Brand").change(function() {
+			query("v_Type", "v_Brand", this);
 		});
 
-		$("#v_Type").change(function(){
-			query("v_Configure","v_Type",this);
+		$("#v_Type").change(function() {
+			query("v_Configure", "v_Type", this);
 		});
 
-		$("#v_Configure").change(function(){
-			alert("chage");
-			
-			if ($(this).val() == "" || $(this).val()==null) {
-				return;
-			}
-			 
-			$.ajax({
-				type : "POST",
-				url : "${pageContext.request.contextPath}/vehicleAction_query",
-				data : "v_Configure.id=" + $(this).val(),
-				success : function(data) {
-
-					alert(data);
-
-					data = eval('(' + data + ')');
-					//data = data.base;
-					
-					//alert(data);
-					
-	 				var i = 1;
-					$("#paramData").children().each(function() {
-						if (i % 2 == 0) {
-							/* 
-							var tmp=data[this.id];
-							var sArr=tmp.split("-");
-							alert(sArr);
-							var  j=0;
-							$(this).find("input").each(function(index) {
-								
-								if(i==2 && index==0){
-									$(this).val(sArr[j]);	
-								}
-								
-								$(this).val(sArr[j]);
-								j++; 
-							});
-							*/
-						}
-						i++;
-					}); 
-					
-				}
-			});
-		});
-
-		//得到的数据填充表格
-	});
-	
-	function query(controlId, selfId,_this) {
+		
+	function query(controlId, selfId, _this) {
 
 		//清除控制选项及下级选项的项目
 		$("#" + controlId).empty();
 		$("#" + controlId).append("<option value=''>请选择</option>");
-		if(selfId=="v_Brand"){
+		if (selfId == "v_Brand") {
 			$("#v_Configure").empty();
 			$("#v_Configure").append("<option value=''>请选择</option>");
 		}
 
 		//alert($(_this).val());
-		
-		//如果是选择默认项目，则设置下级选项不可选
-		if ($(_this).val() == "" || $(_this).val()==null) {
-			alert("null");
+
+		//如果是选择默认的空项目，则设置下级选项不可选，并清除所有填充数据
+		if ($(_this).val() == "" || $(_this).val() == null) {
+			
 			$("#" + controlId).attr("disabled", true);
-			if(selfId=="v_Brand"){
-				$("#v_Configure").attr("disabled",true);
+			if (selfId == "v_Brand") {
+				$("#v_Configure").attr("disabled", true);
 			}
+			clearData();
 			return;
 		}
 
@@ -96,7 +50,7 @@
 			url : "${pageContext.request.contextPath}/vehicleAction_query",
 			data : selfId + ".id=" + $(_this).val(),
 			success : function(data) {
-				
+
 				data = eval('(' + data + ')');
 				data = data.list;
 
@@ -109,8 +63,71 @@
 				$("#" + controlId).attr("disabled", false);
 			}
 		});
-
 	}
+
+	//清空填充的数据
+	function clearData(){
+		var i = 1;
+		$("#paramData").children().each(function() {
+			if (i % 2 == 0) {
+				
+				$(this).find("input").each(function(index) {
+					$(this).val("");
+				}); 
+			}
+			i++;
+		});
+	}
+	
+		//根据车型来填充数据
+		$("#v_Configure").change(function() {
+
+			//选择空默认项目，则清空所有填充数据
+			if ($(this).val() == "" || $(this).val() == null) {
+				clearData();				
+				return;
+			}
+
+			$.ajax({
+				type : "POST",
+				url : "${pageContext.request.contextPath}/vehicleAction_query",
+				data : "v_Configure.id=" + $(this).val(),
+				success : function(data) {
+
+					//alert(data);
+
+					data = eval('(' + data + ')');
+
+					var i = 1;
+					$("#paramData").children().each(function() {
+						if (i % 2 == 0) {
+
+							var tmp = data[this.id];
+							var sArr = tmp.split("-");
+
+							var j = 0;
+							$(this).find("input").each(function(index) {
+
+								if (i == 2 && index == 0) {
+									$(this).val($("#v_Brand option:selected").html()
+											+" "+$("#v_Type option:selected").html()
+											+" "+$("#v_Configure option:selected").html());
+								}else{
+									$(this).val(sArr[j]);
+									j++;
+								}
+							}); 
+
+						}
+						i++;
+					});
+
+				}
+			});
+		});
+
+	});
+
 </script>
 
 </head>
@@ -147,7 +164,7 @@
 		<div>
 			<h3>基本参数</h3>
 		</div>
-		<div id="base">
+		<div>
 			<table cellpadding="0" cellspacing="1">
 				<tbody>
 					<tr>
@@ -989,18 +1006,30 @@
 			</table>
 		</div>
 	</div>
-	
+
 	<!-- 添加输入框 -->
 	<script type="text/javascript">
 		var i = 1;
-		$("#paramData").children().each(function() {
-			if (i % 2 == 0) {
-				$(this).find("tr").each(function() {
-					$(this).append('<td><input type="text" readonly="readonly"></input></td>');
-				});
-			}
-			i++;
+
+		var ids = ["base", "body", "engine", "chassis", "control",
+				"appearance", "interior", "chair", "airconditioner",
+				"security", "multimedia", "hightech" ];
+
+		$("#paramData").children().each(
+				function() {
+					if (i % 2 == 0) {
+
+						$(this).attr("id", ids[i/2 - 1]);
+
+						$(this).find("tr").each(
+							function() {
+								$(this).append('<td><input type="text" readonly="readonly"></input></td>');
+							});
+					}		
+					i++;
 		});
+	
+		
 	</script>
 </body>
 </html>
