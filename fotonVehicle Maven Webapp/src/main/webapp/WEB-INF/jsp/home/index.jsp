@@ -15,7 +15,7 @@
   </head>
   
   
-    <frameset cols="200px,*">
+    <frameset cols="120px,*">
     	<frame name="left" src="${pageContext.request.contextPath}/homeAction_left.action"></frame>
     	<frame name="right" src="${pageContext.request.contextPath}/homeAction_right.action"></frame>
     </frameset>

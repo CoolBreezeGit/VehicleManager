@@ -7,10 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import org.apache.struts2.json.annotations.JSON;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -23,10 +19,8 @@ import com.coolbreeze.oa.service.V_BrandService;
 import com.coolbreeze.oa.service.V_ConfigureService;
 import com.coolbreeze.oa.service.V_ParamService;
 import com.coolbreeze.oa.service.V_TypeService;
-import com.coolbreeze.oa.service.VehicleService;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ModelDriven;
 
 @Controller
 @Scope("prototype")
@@ -48,12 +42,12 @@ public class VehicleAction extends ActionSupport {
 
 	private String msg;
 
-	public String queryUI() {
+	public String queryAndCompareUI() {
 
 		List<V_Brand> v_BrandList = v_BrandService.findAll();
 		ActionContext.getContext().put("v_BrandList", v_BrandList);
 
-		return "queryUI";
+		return "queryAndCompareUI";
 	}
 
 	/*
@@ -68,7 +62,6 @@ public class VehicleAction extends ActionSupport {
 	public void setResponseJson(Map responseJson) {
 		this.responseJson = responseJson;
 	}
-
 
 	public String query() {
 		/*
@@ -92,7 +85,6 @@ public class VehicleAction extends ActionSupport {
 			map.put("list", idname);
 			this.setResponseJson(map);
 
-
 		} else if (v_Type != null) {
 			List<V_Configure> v_ConfigureList = v_ConfigureService
 					.findByTypeId(v_Type.getId());
@@ -105,89 +97,83 @@ public class VehicleAction extends ActionSupport {
 				m.put("name", v_Configure.getName());
 				idname.add(m);
 			}
-			
+
 			map.put("list", idname);
 			this.setResponseJson(map);
-
 
 		} else if (v_Configure != null) {
 			V_Param v_Param = v_ParamService.findByConfigureId(v_Configure
 					.getId());
 
-			//将v_Param 封装成Map
+			// 将v_Param 封装成Map
 			this.setResponseJson(MyBeanUtils.v_ParamToMap(v_Param));
-			//System.out.println(this.responseJson.get("id"));
-			
+			// System.out.println(this.responseJson.get("id"));
+
 		}
 
 		return "query";
 	}
 
 	public String addUI() {
-		
+
 		List<V_Brand> v_BrandList = v_BrandService.findAll();
 		ActionContext.getContext().put("v_BrandList", v_BrandList);
-		
+
 		return "addUI";
 	}
 
 	public String add() {
 
-		
-		System.out.println("name:"+v_Brand.getName());
-		System.out.println("id:"+v_Brand.getId());
-		
-		System.out.println("name:"+v_Type.getName());
-		System.out.println("id:"+v_Type.getId());
-	
-		
-		//新添加了品牌
-		if(v_Brand.getId()==null){
+		// 新添加了品牌
+		if (v_Brand.getId() == null) {
 			v_BrandService.save(v_Brand);
-			//必然要新添加车型
+			// 必然要新添加车型
 			v_Type.setV_Brand(v_Brand);
-			v_TypeService.save(v_Type) ;
+			v_TypeService.save(v_Type);
 
 			v_Configure.setV_Type(v_Type);
-			
-		}else{	//使用原来的品牌
-			//新添加了车型
-			if(v_Type.getId()==null){
+
+		} else { // 使用原来的品牌
+			// 新添加了车型
+			if (v_Type.getId() == null) {
 				v_Type.setV_Brand(v_BrandService.getById(v_Brand.getId()));
-				v_TypeService.save(v_Type) ;
+				v_TypeService.save(v_Type);
 				v_Configure.setV_Type(v_Type);
-				
-			}else{	//使用原来的车型
+
+			} else { // 使用原来的车型
 				v_Configure.setV_Type(v_TypeService.getById(v_Type.getId()));
 			}
-		}	
-		
-		
+		}
+
 		v_ConfigureService.save(v_Configure);
 
 		v_Param.setV_Configure(v_Configure);
 		v_ParamService.save(v_Param);
-
 
 		msg = "添加成功";
 
 		return "msg";
 	}
 
-	public String compare() {
+	/*
+	 * 修改UI
+	 */
+	public String editUI() {
 
-		return "compareUI";
+		List<V_Brand> v_BrandList = v_BrandService.findAll();
+		ActionContext.getContext().put("v_BrandList", v_BrandList);
+
+		return "editUI";
 	}
 
-/*	
-	public void test(){
-		System.out.println("test");
-		V_Brand vb=new V_Brand();
-		vb.setId(2L);		//自己设置id也无效
-		vb.setName("福田");
-		v_BrandService.save(vb);
-	}*/
-	
+	/*
+	 * 修改
+	 */
+	public String edit() {
+
+		return "edit";
+	}
+
 	// ---------------------------------------------------
 
 	public String getMsg() {

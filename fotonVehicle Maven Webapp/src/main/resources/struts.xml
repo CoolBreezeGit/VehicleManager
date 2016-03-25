@@ -8,17 +8,17 @@
 	<constant name="struts.ui.theme" value="simple"></constant>
 	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
 	<!-- <constant name="struts.action.extension" value="action"></constant> -->
-	
+
 
 	<package name="/" extends="json-default" namespace="/">
-	
-	
+
+
 		<action name="homeAction_*" class="homeAction" method="{1}">
 			<result name="{1}">
 				/WEB-INF/jsp/home/{1}.jsp
 			</result>
 		</action>
-	
+
 		<action name="userAction_*" class="userAction" method="{1}">
 			<result name="loginUI">
 				/WEB-INF/jsp/user/login.jsp
@@ -29,32 +29,34 @@
 		</action>
 
 
-		<action name="vehicleAction_*" class="vehicleAction" method="{1}" >
-			<result name="queryUI">
-				/WEB-INF/jsp/vehicle/queryUI.jsp
-			</result>	
-				
+		<action name="vehicleAction_*" class="vehicleAction" method="{1}">
+			<result name="queryAndCompareUI">
+				/WEB-INF/jsp/vehicle/queryAndCompareUI.jsp
+			</result>
+
 			<!-- 对于ajax请求，返回json结果 -->
 			<result name="query" type="json">
 				<param name="noCache">true</param>
 				<param name="contentType">text/html</param>
-				
 				<param name="root">responseJson</param>
-				
-			</result>	
-			
+			</result>
+
 			<result name="addUI">
 				/WEB-INF/jsp/vehicle/addUI.jsp
 			</result>
+
 			<result name="editUI">
 				/WEB-INF/jsp/vehicle/editUI.jsp
 			</result>
+
+			<result name="edit">
+				/WEB-INF/jsp/vehicle/edit.jsp
+			</result>
+
 			<result name="msg">
 				/WEB-INF/jsp/vehicle/msg.jsp
-			</result>			
-			<result name="compareUI">
-				/WEB-INF/jsp/vehicle/addUI.jsp
-			</result>			
+			</result>
+
 		</action>
 
 	</package>

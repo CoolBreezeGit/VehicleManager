@@ -18,11 +18,11 @@
 
 <body>
 	
-	<s:a action="vehicleAction_queryUI">查询</s:a>
-	<br/>
 	<s:a action="vehicleAction_addUI">添加</s:a>
 	<br/>
-	<s:a action="vehicleAction_compare">对比车型</s:a>
+	<s:a action="vehicleAction_editUI">修改/删除</s:a>
+	<br/>
+	<s:a action="vehicleAction_queryAndCompareUI">查询/对比车型</s:a>
 	
 
 </body>
