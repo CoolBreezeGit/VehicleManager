@@ -114,15 +114,15 @@ public class VehicleAction extends ActionSupport {
 		return "query";
 	}
 
-	public String addUI() {
+	public String addOrEditUI() {
 
 		List<V_Brand> v_BrandList = v_BrandService.findAll();
 		ActionContext.getContext().put("v_BrandList", v_BrandList);
 
-		return "addUI";
+		return "addOrEditUI";
 	}
 
-	public String add() {
+	public String addOrEdit() {
 
 		// 新添加了品牌
 		if (v_Brand.getId() == null) {
@@ -132,7 +132,7 @@ public class VehicleAction extends ActionSupport {
 			v_TypeService.save(v_Type);
 
 			v_Configure.setV_Type(v_Type);
-
+			
 		} else { // 使用原来的品牌
 			// 新添加了车型
 			if (v_Type.getId() == null) {
@@ -141,7 +141,36 @@ public class VehicleAction extends ActionSupport {
 				v_Configure.setV_Type(v_Type);
 
 			} else { // 使用原来的车型
-				v_Configure.setV_Type(v_TypeService.getById(v_Type.getId()));
+				
+				//使用新的配置
+				if(v_Configure.getId()==null){
+					
+					v_Configure.setV_Type(v_TypeService.getById(v_Type.getId()));
+					
+				}else{	//使用原来的配置
+					V_Param _v_Param=v_ParamService.getById(v_Param.getId());
+					
+			 		_v_Param.setBase(v_Param.getBase());
+					_v_Param.setBody(v_Param.getBody());
+					_v_Param.setEngine(v_Param.getEngine());
+					_v_Param.setChassis(v_Param.getChassis());
+					_v_Param.setControl(v_Param.getControl());
+					_v_Param.setAppearance(v_Param.getAppearance());
+					_v_Param.setInterior(v_Param.getInterior());
+					_v_Param.setChair(v_Param.getChair());
+					_v_Param.setAirconditioner(v_Param.getAirconditioner());
+					_v_Param.setSecurity(v_Param.getSecurity());
+					_v_Param.setMultimedia(v_Param.getMultimedia());
+					_v_Param.setHightech(v_Param.getHightech());
+					
+					v_ParamService.update(_v_Param);
+					
+					msg = "修改成功";
+
+					return "msg";
+					
+				}
+					
 			}
 		}
 
@@ -158,20 +187,32 @@ public class VehicleAction extends ActionSupport {
 	/*
 	 * 修改UI
 	 */
-	public String editUI() {
+	public String deleteUI() {
 
 		List<V_Brand> v_BrandList = v_BrandService.findAll();
 		ActionContext.getContext().put("v_BrandList", v_BrandList);
 
-		return "editUI";
+		return "deleteUI";
 	}
 
+	
+	private String del;	//用于删除时判别
+	
 	/*
 	 * 修改
 	 */
-	public String edit() {
+	public String delete() {
 
-		return "edit";
+		if(del.equals("Brand")){
+			v_BrandService.delete(v_Brand.getId());
+		}else if(del.equals("Type")){
+			v_TypeService.delete(v_Type.getId());
+		}else if(del.equals("Configure")){
+			v_ConfigureService.delete(v_Configure.getId());
+		}
+			
+		msg="删除成功";
+		return "msg";
 	}
 
 	// ---------------------------------------------------
@@ -214,6 +255,14 @@ public class VehicleAction extends ActionSupport {
 
 	public void setV_Param(V_Param v_Param) {
 		this.v_Param = v_Param;
+	}
+
+	public String getDel() {
+		return del;
+	}
+
+	public void setDel(String del) {
+		this.del = del;
 	}
 
 }

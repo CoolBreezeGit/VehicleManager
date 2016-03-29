@@ -9,6 +9,7 @@
 
 <script src="${pageContext.request.contextPath}/script/jquery-2.1.4.js"></script>
 <script>
+	
 	$(function() {
 
 		//ajax级联查询
@@ -16,11 +17,40 @@
 			query("v_Type", "v_Brand", this);
 		});
 		
+		$("#v_Type").change(function() {
+			query("v_Configure", "v_Type", this);
+		});
+		
 		function query(controlId, selfId, _this) {
 
 			//清除控制选项项目
 			$("#" + controlId).empty();
 			$("#" + controlId).append("<option value=''></option>");
+
+			
+			//去除下级的输入框disable属性
+			$("#" + controlId).parent().next().removeAttr("disabled");
+			
+			
+			if (selfId == "v_Brand") {
+				$("#v_Configure").empty();
+				$("#v_Configure").append("<option value=''></option>");
+				
+				$("#v_Configure").parent().next().removeAttr("disabled");
+				
+				$("#v_TypeName").val("");	
+			}
+			
+
+			$("#v_ConfigureName").val("");
+			
+			//清除数据
+			clearData();
+			
+			//如果是选择默认的空项目，则设置下级选项不可选，并清除所有填充数据
+ 			if ($(_this).val() == "" || $(_this).val() == null) {
+				return;
+			} 
 
 			//发起ajax请求，填充下级选项数据
 			$.ajax({
@@ -37,27 +67,90 @@
 								"<option value="+data[i].id+">" + data[i].name
 										+ "</option>");
 					}
+					//设置控制选项可选
+					//$("#" + controlId).attr("disabled", false);
 				}
 			});
 		}
+
+		//清空填充的数据
+		function clearData(){
+			var i = 1;
+			$("#paramData").children().each(function() {
+				if (i % 2 == 0) {
+					
+					$(this).find("input").each(function(index) {
+						$(this).val("");
+					}); 
+				}
+				i++;
+			});
+		}
 		
+		//根据车型来填充数据
+		$("#v_Configure").change(function() {
+
+			//选择空默认项目，则清空所有填充数据
+			if ($(this).val() == "" || $(this).val() == null) {
+				clearData();				
+				
+				//显示添加按钮
+				$("#submit").text("添加");
+				return;
+			}else{
+				//显示修改按钮
+				$("#submit").text("修改");
+			}
+
+			$.ajax({
+				type : "POST",
+				url : "${pageContext.request.contextPath}/vehicleAction_query",
+				data : "v_Configure.id=" + $(this).val(),
+				success : function(data) {
+
+					//alert(data);
+
+					data = eval('(' + data + ')');
+					$("#v_ParamId").val(data["id"]);
+					var i = 1;
+					$("#paramData").children().each(function() {
+						if (i % 2 == 0) {
+
+							var tmp = data[this.id];
+							var sArr = tmp.split("-");
+
+							var j = 0;
+							$(this).find("input").each(function(index) {
+
+								//填充获取的数据参数
+								$(this).val(sArr[j]);
+								j++;
+							}); 
+
+						}
+						i++;
+					});
+
+				}
+			});
+		});
 		
 		
 		//点击保存按钮，处理函数
-		$("#vehicleAction_add").click(function() {
+		$("#submit").click(function() {
 			
 			//校验：品牌，车型，配置不能为空
 			if($("[name=v_Brand\\.name]").val()==""){
 				alert("品牌不能为空！");
-				return;
+				return false;
 			}
 			if($("[name=v_Type\\.name]").val()==""){
 				alert("车型不能为空！");
-				return;
+				return false;
 			}
 			if($("[name=v_Configure\\.name]").val()==""){
 				alert("配置不能为空！");
-				return;
+				return false;
 			}
 		
 			
@@ -73,7 +166,7 @@
 							s=s+$(this).val();
 						}
 					});					
-					$($inputs[(index+1)/2-1]).val(s);
+					$($inputs[(index+1)/2]).val(s);
 				}			
 			});
 			
@@ -89,33 +182,50 @@
 		$("#v_Type").change(function(){
 			changeFun(this);
 		});
-
-	});
-	
-	function changeFun(_this){
-		//_this.parentNode.nextSibling.value=_this.options[_this.options.selectedIndex].text;
 		
-		$(_this).parent().next().val($(_this).children(":selected").text());
-				
-		if($(_this).val()!=""){
-			$(_this).parent().next().attr("disabled","disabled");
-		}else{
-			$(_this).parent().next().removeAttr("disabled");
+		$("#v_Configure").change(function(){
+			changeFun(this);
+		});
+
+		
+		function changeFun(_this){
+			//_this.parentNode.nextSibling.value=_this.options[_this.options.selectedIndex].text;
+			
+			$(_this).parent().next().val($(_this).children(":selected").text());
+					
+			if($(_this).val()!=""){
+				$(_this).parent().next().attr("disabled","disabled");
+			}else{
+				$(_this).parent().next().removeAttr("disabled");
+			}
+			
 		}
 		
-	}
+		//添加div显示隐藏功能
+		var k = 1;
+		$("#paramData").children().each(
+			function() {
+				if (k % 2 != 0) {
+					$(this).click(function(){
+						$(this).next().toggle();
+					});
+				}
+				k++;
+		});
+		
+	});
+		
+
 </script>
 
 
 </head>
 
-<body>
-
-	<input type="submit" id="vehicleAction_add" value="保存"></input>
+<body>	
 
 
-	<s:form id="dataForm" action="vehicleAction_add" method="post">
-
+	<s:form id="dataForm" action="vehicleAction_addOrEdit" method="post">
+		<input type="hidden" id="v_ParamId" name="v_Param.id">
 		<input type="hidden" name="v_Param.base">
 		<input type="hidden" name="v_Param.body">
 		<input type="hidden" name="v_Param.engine">
@@ -129,7 +239,10 @@
 		<input type="hidden" name="v_Param.multimedia">
 		<input type="hidden" name="v_Param.hightech">
 
-
+	<table WIDTH="84%">
+		<tbody>
+		<tr>
+		<td width="25%">
 		<div id="column_1">
 			<div>
 				<h2>品牌</h2>
@@ -142,7 +255,8 @@
  				</div>
 			</div>
 		</div>
-
+		</td>
+		<td width="25%">
 		<div id="column_2">
 			<div>
 				<h2>车型</h2>
@@ -151,20 +265,37 @@
 				 <select id="v_Type" name="v_Type.id" style="width:118px;margin-left:-100px" 
 				 >
 				 	<option></option>
-				 </select></span><input name="v_Type.name" style="width:100px;height:20px;position:absolute;left:0px;">
+				 </select></span><input id="v_TypeName" name="v_Type.name" style="width:100px;height:20px;position:absolute;left:0px;">
  				</div>
 			</div>
 		</div>
-
+		</td>
+		<td width="25%">
 		<div id="column_3">
 			<div>
 				<h2>配置</h2>
-				<input type="text" name="v_Configure.name"/> 
+				<div style="position:relative;">
+				 <span style="margin-left:100px;width:18px;overflow:hidden;">
+				 <select id="v_Configure"  name="v_Configure.id" style="width:118px;margin-left:-100px" 
+				  >		
+				  <option></option>		 	
+				 </select></span><input id="v_ConfigureName" name="v_Configure.name" style="width:100px;height:20px;position:absolute;left:0px;">
+ 				</div>
 			</div>
 		</div>
+		</td>
+		<td>
+			<button id="submit" style="width:50px;height:50px">添加</button>
+		</td>
+		</tr>
+		</tbody>
+
+	</table>
 
 	</s:form>
-
+	
+<h3>==========================================================================================================</h3>
+	
 	<div id="paramData">
 
 		<div>
@@ -223,6 +354,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>车身参数</h3>
 			</div>
@@ -286,6 +418,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>发动机</h3>
 			</div>
@@ -361,6 +494,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>底盘</h3>
 			</div>
@@ -421,6 +555,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>操控配置</h3>
 			</div>
@@ -475,6 +610,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>外观</h3>
 			</div>
@@ -601,6 +737,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>内饰配置</h3>
 			</div>
@@ -709,6 +846,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>座椅配置</h3>
 			</div>
@@ -811,6 +949,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>空调/冰箱</h3>
 			</div>
@@ -847,6 +986,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>安全配置</h3>
 			</div>
@@ -922,6 +1062,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>多媒体配置</h3>
 			</div>
@@ -982,6 +1123,7 @@
 		</div>
 
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>高科技配置</h3>
 			</div>

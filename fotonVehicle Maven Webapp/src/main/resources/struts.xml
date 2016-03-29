@@ -41,16 +41,12 @@
 				<param name="root">responseJson</param>
 			</result>
 
-			<result name="addUI">
-				/WEB-INF/jsp/vehicle/addUI.jsp
+			<result name="addOrEditUI">
+				/WEB-INF/jsp/vehicle/addOrEditUI.jsp
 			</result>
 
-			<result name="editUI">
-				/WEB-INF/jsp/vehicle/editUI.jsp
-			</result>
-
-			<result name="edit">
-				/WEB-INF/jsp/vehicle/edit.jsp
+			<result name="deleteUI">
+				/WEB-INF/jsp/vehicle/deleteUI.jsp
 			</result>
 
 			<result name="msg">

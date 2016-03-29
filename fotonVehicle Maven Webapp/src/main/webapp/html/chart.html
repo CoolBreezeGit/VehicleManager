@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<title></title>
+<script src="../script/Chart.js"></script>
+<script src="../script/jquery-2.1.4.js"></script>
+</head>
+<body>	
+	<div style="width: 50%">
+		<canvas id="canvas" height="700" width="650"></canvas>
+	</div>
+
+
+	<script>
+		window.onload = function() {
+			//alert("hello");
+			/* alert($("#chartData", window.parent.document).val());
+			
+			alert(window.parent.document.getElementById("chartData"));
+		 */
+		 
+			var args=window.dialogArguments;
+			//alert(args[0]+" : "+args[1]);
+			document.title=args[0];
+
+			var barChartData = {
+				labels : args[1],
+				datasets : [ {
+					fillColor : "rgba(200,200,220,0.8)",
+					strokeColor : "rgba(220,200,220,0.8)",
+					highlightFill : "rgba(220,200,220,0.75)",
+					highlightStroke : "rgba(200,220,220,1)",
+					data : args[2]
+				} ]
+
+			};
+ 
+			var ctx = document.getElementById("canvas").getContext("2d");
+			window.myBar = new Chart(ctx).Bar(barChartData, {
+				responsive : true
+			});
+			
+		}
+	</script>
+</body>
+</html>

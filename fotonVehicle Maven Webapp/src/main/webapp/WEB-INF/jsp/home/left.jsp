@@ -18,9 +18,9 @@
 
 <body>
 	
-	<s:a action="vehicleAction_addUI">添加</s:a>
+	<s:a action="vehicleAction_addOrEditUI">添加/修改</s:a>
 	<br/>
-	<s:a action="vehicleAction_editUI">修改/删除</s:a>
+	<s:a action="vehicleAction_deleteUI">删除</s:a>
 	<br/>
 	<s:a action="vehicleAction_queryAndCompareUI">查询/对比车型</s:a>
 	

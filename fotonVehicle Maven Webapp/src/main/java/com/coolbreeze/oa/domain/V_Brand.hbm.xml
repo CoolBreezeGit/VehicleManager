@@ -13,7 +13,7 @@
 		<property name="name"></property>
 		
 		<!-- 与车型的一对多关系 -->
-		<set name="v_Types">
+		<set name="v_Types" cascade="delete">
 			<key column="v_BrandId"></key>
 			<one-to-many class="V_Type"/>
 		</set>

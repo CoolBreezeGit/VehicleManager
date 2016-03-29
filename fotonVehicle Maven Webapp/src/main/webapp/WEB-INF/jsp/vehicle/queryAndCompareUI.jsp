@@ -12,51 +12,58 @@
 
 
 <script src="${pageContext.request.contextPath}/script/jquery-2.1.4.js"></script>
+<script src="${pageContext.request.contextPath}/script/Chart.js"></script>
 <script type="text/javascript">
+	
 	$(function() {
 
-			//ajax级联查询
+		//ajax级联查询
+		for (var i = 1; i <= 4; i++) {
+			$("#v_Brand" + i).bind("change", {
+				index : i
+			}, function(event) {
+				var index = event.data.index;
+				query("v_Type" + index, "v_Brand", this, index);
+			});
+			/* 				$("#v_Brand"+i).change(function() {
+			 query($(this).parent().next().children("select"), "v_Brand", this);
+			 }); */
+		}
+		;
 
-			for(var i=1;i<=4;i++){
-				$("#v_Brand"+i).bind("change",{index:i},function(event){
-					var index=event.data.index;
-					query("v_Type"+index, "v_Brand", this,index);
-				});
-/* 				$("#v_Brand"+i).change(function() {
-					query($(this).parent().next().children("select"), "v_Brand", this);
-				}); */
-			};
-				
-			for(var i=1;i<=4;i++){
-				
-				$("#v_Type"+i).bind("change",{index:i},function(event){
-					var index=event.data.index;
-					query("v_Configure"+index, "v_Type", this,index);
-				});
-				
-				/* $("#v_Type"+i).change(function() {
-					query($(this).parent().next().children("select"),"v_Type",this);
-				}); */
-			};
+		for (var i = 1; i <= 4; i++) {
 
-		function query(controlId, selfId, _this,index) {
+			$("#v_Type" + i).bind("change", {
+				index : i
+			}, function(event) {
+				var index = event.data.index;
+				query("v_Configure" + index, "v_Type", this, index);
+			});
+
+			/* $("#v_Type"+i).change(function() {
+				query($(this).parent().next().children("select"),"v_Type",this);
+			}); */
+		}
+		;
+
+		function query(controlId, selfId, _this, index) {
 
 			//清除控制选项及下级选项的项目
-			$("#"+controlId).empty();
-			$("#"+controlId).append("<option value=''>请选择</option>");
-			if (selfId == "v_Brand") {	//清除下级的配置选项
-				$("#v_Configure"+index).empty();
-				$("#v_Configure"+index).append("<option value=''>请选择</option>");
+			$("#" + controlId).empty();
+			$("#" + controlId).append("<option value=''>请选择</option>");
+			if (selfId == "v_Brand") { //清除下级的配置选项
+				$("#v_Configure" + index).empty();
+				$("#v_Configure" + index).append("<option value=''>请选择</option>");
 			}
 
 			//alert($(_this).val());
 
 			//如果是选择默认的空项目，则设置下级选项不可选，并清除所有填充数据
 			if ($(_this).val() == "" || $(_this).val() == null) {
-				
-				$("#"+controlId).attr("disabled", true);
+
+				$("#" + controlId).attr("disabled", true);
 				if (selfId == "v_Brand") {
-					$("#v_Configure"+index).attr("disabled", true);
+					$("#v_Configure" + index).attr("disabled", true);
 				}
 				clearData(index);
 				return;
@@ -73,12 +80,10 @@
 					data = data.list;
 
 					for (var i = 0; i < data.length; i++) {
-						$("#"+controlId).append(
-								"<option value="+data[i].id+">" + data[i].name
-										+ "</option>");
+						$("#" + controlId).append("<option value="+data[i].id+">" + data[i].name + "</option>");
 					}
 					//设置控制选项可选
-					$("#"+controlId).attr("disabled", false);
+					$("#" + controlId).attr("disabled", false);
 				}
 			});
 		}
@@ -88,152 +93,215 @@
 			var i = 1;
 			$("#paramData").children().each(function() {
 				if (i % 2 == 0) {
-					$(this).find(".input"+j).each(function() {
+					$(this).find(".input" + j).each(function() {
 						$(this).val("");
 					});
 				}
 				i++;
 			});
-		}
+		};
 
 		//为配置绑定事件，根据车型来填充数据
-		for(var i=1;i<=4;i++){
+		for (var i = 1; i <= 4; i++) {
 
-		  $("#v_Configure"+i).bind("change",{index:i},function(event) {
+			$("#v_Configure" + i).bind(
+					"change",
+					{
+						index : i
+					},
+					function(event) {
 
-			 var i=event.data.index;
-			  
-			//选择空默认项目，则清空所有填充数据
-			if ($(this).val() == "" || $(this).val() == null) {
-				clearData(i);
-				return;
-			}
+						var i = event.data.index;
 
-			$.ajax({
-				type : "POST",
-				url : "${pageContext.request.contextPath}/vehicleAction_query",
-				data : "v_Configure.id=" + $(this).val(),
-				success : function(data) {
-
-					//alert(data);
-
-					data = eval('(' + data + ')');
-
-					var k = 1;
-					$("#paramData").children().each(function() {
-						if (k % 2 == 0) {
-
-							var tmp = data[this.id];
-							var sArr = tmp.split("-");
-
-							var j = 0;
-							$(this).find(".input"+i).each(function(index) {
-
-								//填充第一个车型项目：品牌+车型+配置
-								if (k == 2 && index == 0) {
-									$(this).val($("#v_Brand"+i+" option:selected").html() 
-											+ " " + $("#v_Type"+i+" option:selected").html() 
-											+ " " + $("#v_Configure"+i+" option:selected").html());
-								} else {
-									//填充获取的数据参数
-									$(this).val(sArr[j]);
-									j++;
-								}
-							});
-
+						//选择空默认项目，则清空所有填充数据
+						if ($(this).val() == "" || $(this).val() == null) {
+							clearData(i);
+							return;
 						}
-						k++;
-					});
 
-				}
+						$.ajax({
+							type : "POST",
+							url : "${pageContext.request.contextPath}/vehicleAction_query",
+							data : "v_Configure.id=" + $(this).val(),
+							success : function(data) {
+
+								//alert(data);
+
+								data = eval('(' + data + ')');
+
+								var k = 1;
+								$("#paramData").children().each(
+										function() {
+											if (k % 2 == 0) {
+
+												var tmp = data[this.id];
+												var sArr = tmp.split("-");
+
+												var j = 0;
+												$(this).find(".input" + i).each(
+														function(index) {
+
+															//填充第一个车型项目：品牌+车型+配置
+															if (k == 2 && index == 0) {
+																$(this).val(
+																		$("#v_Brand" + i + " option:selected").html() + " " + $("#v_Type" + i + " option:selected").html() + " "
+																				+ $("#v_Configure" + i + " option:selected").html());
+															} else {
+																//填充获取的数据参数
+																$(this).val(sArr[j]);
+																j++;
+															}
+														});
+
+											}
+											k++;
+										});
+							}
+						});
+					});
+		};
+		
+		
+		//为按钮提供点击事件处理，实现图表对比功能
+		$("button").click(function(){
+			//alert($(this).parent().next().children().val());
+			
+			var title=$(this).text()+"对比图";
+			
+			var vehicle=[];
+			
+			$("#vehicle").siblings("td").each(function(){
+				vehicle.push($(this).children().val());
 			});
+			
+			var data=[];
+			$(this).parent().siblings().each(function(){
+				data.push(parseFloat($(this).children().val()));
+			});
+			
+			//window.open("${pageContext.request.contextPath}/html/chart.html?t="+new Date(),"对比","height=400,width=800,top=300,left=300");
+			window.showModalDialog("${pageContext.request.contextPath}/html/chartByHighCharts.html?+t="+new Date(),[title,vehicle,data],"dialogHeight:500px;dialogWidth:700px;dialogLeft:350px;dialogTop:200px;");
 		});
 
 		
-		}
-	});
+		//添加div显示隐藏功能
+		var k = 1;
+		$("#paramData").children().each(
+			function() {
+					if (k % 2 != 0) {
+						$(this).click(function(){
+							$(this).next().toggle();
+						});
+					}
+					k++;
+			});
+		});
+	
+	
+		//滚动条事件，显示顶层div
+/* 		$(window).scroll(function(){
+			if($(document).scrollTop()>120){
+				$("#info").show();
+			}else{
+				$("#info").hide();
+			}
+		}); */
+		
 </script>
 
 </head>
 
 <body>
 
-	<div id="QDiv">
+	<div id="info" style="display:none;align:center;position:fixed;z-index:999">
+		<table WIDTH="84%" align="center" CELLSPACING="0" CELLPADDING="0">
+		<tbody>
+			<tr>
+				<td><h1>AAAA</h1></td>
+				<td><h1>CCC</h1></td>
+				<td><h1>DDD</h1></td>
+				<td><h1>DDD</h1></td>
+			</tr>
+		</tbody>
+		</table>
+	</div>
 
+	<div id="QDiv">
+		<input type="hidden" id="chartData" />
 		<table WIDTH="84%" align="right" CELLSPACING="0" CELLPADDING="0">
 			<tbody>
 				<tr>
 					<td width="25%">
 						<div id="Q1">
-								<div>
-									<label>品牌</label>
-									<s:select id ="v_Brand1" list="#v_BrandList" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
-								</div>
-								<div>
-									<label>车型</label> <select id="v_Type1" disabled="disabled">
-										<option value="">请选择</option>
-									</select>
-								</div>
-								<div>
-									<label>配置</label> <select id="v_Configure1" disabled="disabled">
-										<option>请选择</option>
-									</select>
-								</div>
+							<div>
+								<label>品牌</label>
+								<s:select id="v_Brand1" list="#v_BrandList"  style="width:120px" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
+							</div>
+							<div>
+								<label>车型</label> <select id="v_Type1" style="width:120px"  disabled="disabled">
+									<option value="">请选择</option>
+								</select>
+							</div>
+							<div>
+								<label>配置</label> <select id="v_Configure1" style="width:120px"  disabled="disabled">
+									<option>请选择</option>
+								</select>
+							</div>
 						</div>
 					</td>
 					<td width="25%">
 						<div id="Q2">
-								<div>
-									<label>品牌</label>
-									<s:select id ="v_Brand2" list="#v_BrandList" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
-								</div>
-								<div>
-									<label>车型</label> <select id="v_Type2" disabled="disabled">
-										<option value="">请选择</option>
-									</select>
-								</div>
-								<div>
-									<label>配置</label> <select id="v_Configure2" disabled="disabled">
-										<option>请选择</option>
-									</select>
-								</div>
+							<div>
+								<label>品牌</label>
+								<s:select id="v_Brand2" style="width:120px" list="#v_BrandList" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
+							</div>
+							<div>
+								<label>车型</label> <select style="width:120px" id="v_Type2" disabled="disabled">
+									<option value="">请选择</option>
+								</select>
+							</div>
+							<div>
+								<label>配置</label> <select style="width:120px" id="v_Configure2" disabled="disabled">
+									<option>请选择</option>
+								</select>
+							</div>
 						</div>
 					</td>
 					<td width="25%">
 						<div id="Q3">
-								<div>
-									<label>品牌</label>
-									<s:select id ="v_Brand3" list="#v_BrandList" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
-								</div>
-								<div>
-									<label>车型</label> <select id="v_Type3" disabled="disabled">
-										<option value="">请选择</option>
-									</select>
-								</div>
-								<div>
-									<label>配置</label> <select id="v_Configure3" disabled="disabled">
-										<option>请选择</option>
-									</select>
-								</div>
+							<div>
+								<label>品牌</label>
+								<s:select id="v_Brand3" list="#v_BrandList"  style="width:120px" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
+							</div>
+							<div>
+								<label>车型</label> <select id="v_Type3"  style="width:120px" disabled="disabled">
+									<option value="">请选择</option>
+								</select>
+							</div>
+							<div>
+								<label>配置</label> <select id="v_Configure3"  style="width:120px" disabled="disabled">
+									<option>请选择</option>
+								</select>
+							</div>
 						</div>
 
 					</td>
 					<td width="25%">
 						<div id="Q4">
-								<div>
-									<label>品牌</label>
-									<s:select id ="v_Brand4" list="#v_BrandList" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
-								</div>
-								<div>
-									<label>车型</label> <select id="v_Type4" disabled="disabled">
-										<option value="">请选择</option>
-									</select>
-								</div>
-								<div>
-									<label>配置</label> <select id="v_Configure4" disabled="disabled">
-										<option>请选择</option>
-									</select>
-								</div>
+							<div>
+								<label>品牌</label>
+								<s:select id="v_Brand4" list="#v_BrandList"  style="width:120px" listKey="id" listValue="name" headerKey="" headerValue="请选择"></s:select>
+							</div>
+							<div>
+								<label>车型</label> <select id="v_Type4" style="width:120px"  disabled="disabled">
+									<option value="">请选择</option>
+								</select>
+							</div>
+							<div>
+								<label>配置</label> <select id="v_Configure4"  style="width:120px" disabled="disabled">
+									<option>请选择</option>
+								</select>
+							</div>
 						</div>
 					</td>
 				</tr>
@@ -243,28 +311,27 @@
 	</div>
 
 
-	<h3>==================================================================================================================</h3>
-
-
-
-	<div id="paramData">
+<h3>==================================================================================================================</h3>
+	<div id="paramData" >
 		<div>
-			<h3>基本参数</h3>
+			<div>
+				<h3>基本参数</h3>
+			</div>
 		</div>
 		<div>
 			<table cellpadding="0" cellspacing="1" WIDTH="100%" align="right">
 				<tbody>
 					<tr>
-						<td>车型</td>
+						<td id="vehicle">车型</td>
 					</tr>
 					<tr>
-						<td>指导价</td>
+						<td><button>指导价</button></td>
 					</tr>
 					<tr>
-						<td>市场报价</td>
+						<td><button>市场报价</button></td>
 					</tr>
 					<tr>
-						<td>生产时间(年式)</td>
+						<td><button>生产时间(年式)</button></td>
 					</tr>
 					<tr>
 						<td>发动机位置</td>
@@ -273,36 +340,38 @@
 						<td>驱动形式</td>
 					</tr>
 					<tr>
-						<td>等速油耗(L/100km)</td>
+						<td><button>等速油耗(L/100km)</button></td>
 					</tr>
 					<tr>
-						<td>综合油耗(L/100km)</td>
+						<td><button>综合油耗(L/100km)</button></td>
 					</tr>
 					<tr>
-						<td>工信部油耗(L/100km)市郊</td>
+						<td><button>工信部油耗(L/100km)市郊</button></td>
 					</tr>
 					<tr>
-						<td>工信部油耗(L/100km)市区</td>
+						<td><button>工信部油耗(L/100km)市区</button></td>
 					</tr>
 					<tr>
-						<td>工信部油耗(L/100km)综合</td>
+						<td><button>工信部油耗(L/100km)综合</button></td>
 					</tr>
 					<tr>
-						<td>最高车速(km/h)</td>
+						<td><button>最高车速(km/h)</button></td>
 					</tr>
 					<tr>
-						<td>整车质保</td>
+						<td><button>整车质保</button></td>
 					</tr>
 					<tr>
-						<td>保养周期</td>
+						<td><button>保养周期</button></td>
 					</tr>
 					<tr>
-						<td>首保里程</td>
+						<td><button>首保里程</button></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
+
 		<div>
+			<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>车身参数</h3>
 			</div>
@@ -311,60 +380,61 @@
 			<table cellpadding="0" cellspacing="1" WIDTH="100%" align="right">
 				<tbody>
 					<tr>
-						<td>长</td>
+						<td><button>长</button></td>
 					</tr>
 					<tr>
-						<td>宽</td>
+						<td><button>宽</button></td>
 					</tr>
 					<tr>
-						<td>高</td>
+						<td><button>高</button></td>
 					</tr>
 					<tr>
-						<td>轴距</td>
+						<td><button>轴距</button></td>
 					</tr>
 					<tr>
-						<td>前轮距</td>
+						<td><button>前轮距</button></td>
 					</tr>
 					<tr>
-						<td>后轮距</td>
+						<td><button>后轮距</button></td>
 					</tr>
 					<tr>
-						<td>最小离地间隙</td>
+						<td><button>最小离地间隙</button></td>
 					</tr>
 					<tr>
-						<td>整备质量</td>
+						<td><button>整备质量</button></td>
 					</tr>
 					<tr>
-						<td>承载质量</td>
+						<td><button>承载质量</button></td>
 					</tr>
 					<tr>
-						<td>车身结构</td>
+						<td><button>车身结构</button></td>
 					</tr>
 					<tr>
-						<td>车门数</td>
+						<td><button>车门数</button></td>
 					</tr>
 					<tr>
-						<td>座位排数</td>
+						<td><button>座位排数</button></td>
 					</tr>
 					<tr>
-						<td>座位数</td>
+						<td><button>座位数</button></td>
 					</tr>
 					<tr>
-						<td>油箱容积(L)</td>
+						<td><button>油箱容积(L)</button></td>
 					</tr>
 					<tr>
-						<td>后备箱容积(L)</td>
+						<td><button>后备箱容积(L)</button></td>
 					</tr>
 					<tr>
-						<td>风阻系数</td>
+						<td><button>风阻系数</button></td>
 					</tr>
 					<tr>
-						<td>最小转弯半径(m)</td>
+						<td><button>最小转弯半径(m)</button></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<div>
+			<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>发动机</h3>
 			</div>
@@ -373,72 +443,73 @@
 			<table cellpadding="0" cellspacing="1" WIDTH="100%" align="right">
 				<tbody>
 					<tr>
-						<td>发动机排量(mL)</td>
+						<td><button>发动机排量(mL)</button></td>
 					</tr>
 					<tr>
-						<td>工作方式</td>
+						<td><button>工作方式</button></td>
 					</tr>
 					<tr>
-						<td>每缸气门数(个)</td>
+						<td><button>每缸气门数(个)</button></td>
 					</tr>
 					<tr>
-						<td>气缸排列形式</td>
+						<td><button>气缸排列形式</button></td>
 					</tr>
 					<tr>
-						<td>压缩比</td>
+						<td><button>压缩比</button></td>
 					</tr>
 					<tr>
-						<td>气门结构</td>
+						<td><button>气门结构</button></td>
 					</tr>
 					<tr>
-						<td>正时结构</td>
+						<td><button>正时结构</button></td>
 					</tr>
 					<tr>
-						<td>最大马力(Ps)</td>
+						<td><button>最大马力(Ps)</button></td>
 					</tr>
 					<tr>
-						<td>最大功率(Kw)</td>
+						<td><button>最大功率(Kw)</button></td>
 					</tr>
 					<tr>
-						<td>最大功率转速(rpm)</td>
+						<td><button>最大功率转速(rpm)</button></td>
 					</tr>
 					<tr>
-						<td>最大扭矩(Nm)</td>
+						<td><button>最大扭矩(Nm)</button></td>
 					</tr>
 					<tr>
-						<td>最大扭矩转速(rpm)</td>
+						<td><button>最大扭矩转速(rpm)</button></td>
 					</tr>
 					<tr>
-						<td>发动机特有技术</td>
+						<td><button>发动机特有技术</button></td>
 					</tr>
 					<tr>
-						<td>燃料形式</td>
+						<td><button>燃料形式</button></td>
 					</tr>
 					<tr>
-						<td>燃油标号</td>
+						<td><button>燃油标号</button></td>
 					</tr>
 					<tr>
-						<td>供油方式</td>
+						<td><button>供油方式</button></td>
 					</tr>
 					<tr>
-						<td>缸体材料</td>
+						<td><button>缸体材料</button></td>
 					</tr>
 					<tr>
-						<td>环保标准</td>
+						<td><button>环保标准</button></td>
 					</tr>
 					<tr>
-						<td>弱混合动力</td>
+						<td><button>弱混合动力</button></td>
 					</tr>
 					<tr>
-						<td>强混合动力</td>
+						<td><button>强混合动力</button></td>
 					</tr>
 					<tr>
-						<td>纯电动</td>
+						<td><button>纯电动</button></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>底盘</h3>
 			</div>
@@ -450,7 +521,7 @@
 						<td>变速器类型</td>
 					</tr>
 					<tr>
-						<td>档位数(个)</td>
+						<td><button>档位数(个)</button></td>
 					</tr>
 					<tr>
 						<td>转向器型式</td>
@@ -498,6 +569,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>操控配置</h3>
 			</div>
@@ -551,6 +623,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>外观</h3>
 			</div>
@@ -676,6 +749,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>内饰配置</h3>
 			</div>
@@ -783,6 +857,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>座椅配置</h3>
 			</div>
@@ -884,6 +959,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>空调/冰箱</h3>
 			</div>
@@ -919,6 +995,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>安全配置</h3>
 			</div>
@@ -993,6 +1070,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>多媒体配置</h3>
 			</div>
@@ -1052,6 +1130,7 @@
 			</table>
 		</div>
 		<div>
+		<h3>------------------------------------------------------------------------------------------------------------------</h3>
 			<div>
 				<h3>高科技配置</h3>
 			</div>
@@ -1104,7 +1183,7 @@
 			if (i % 2 == 0) {
 
 				$(this).attr("id", ids[i / 2 - 1]);
-
+				
 				$(this).find("tr").each(function() {
 					for (var i = 1; i <= 4; i++) {
 						$(this).append('<td width="21%"><input class="input'+i+'" type="text" readonly="readonly" size="38"></input></td>');
