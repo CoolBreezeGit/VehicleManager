@@ -23,11 +23,9 @@
 	<s:a action="vehicleAction_deleteUI">删除</s:a>
 	<br/>
 	<s:a action="vehicleAction_queryAndCompareUI">查询/对比车型</s:a>
-	
+	<br/>
+	<s:a action="userAction_logout" target="_parent">注销</s:a>	
 
 </body>
-
-
-
 
 </html>

@@ -11,7 +11,25 @@
 
 
 	<package name="/" extends="json-default" namespace="/">
+		<!-- 拦截器 -->
+		<interceptors>
+			<!-- 权限拦截器 -->
+			<interceptor name="privilegeInterceptor" class="com.coolbreeze.vehicle.interceptor.PrivilegeInterceptor"></interceptor>
+			
+			<!-- 重新定义拦截器栈,将权限拦截器放在最外层 -->
+			<interceptor-stack name="defaultStack">
+				<interceptor-ref name="privilegeInterceptor"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
 
+
+		<!-- 全局result -->
+		<global-results>
+			<result name="login" type="redirectAction">
+				userAction_loginUI
+			</result>
+		</global-results>
 
 		<action name="homeAction_*" class="homeAction" method="{1}">
 			<result name="{1}">
@@ -21,7 +39,7 @@
 
 		<action name="userAction_*" class="userAction" method="{1}">
 			<result name="loginUI">
-				/WEB-INF/jsp/user/login.jsp
+				/WEB-INF/jsp/user/loginUI.jsp
 			</result>
 			<result name="toIndex" type="redirectAction">
 				homeAction_index

@@ -57,15 +57,17 @@
 			}
 
 			//alert($(_this).val());
-
-			//如果是选择默认的空项目，则设置下级选项不可选，并清除所有填充数据
+			
+			//清除所有填充数据
+			clearData(index);
+			
+			//如果是选择默认的空项目，则设置下级选项不可选
 			if ($(_this).val() == "" || $(_this).val() == null) {
 
 				$("#" + controlId).attr("disabled", true);
 				if (selfId == "v_Brand") {
 					$("#v_Configure" + index).attr("disabled", true);
 				}
-				clearData(index);
 				return;
 			}
 
@@ -135,7 +137,7 @@
 											if (k % 2 == 0) {
 
 												var tmp = data[this.id];
-												var sArr = tmp.split("-");
+												var sArr = tmp.split("=");
 
 												var j = 0;
 												$(this).find(".input" + i).each(
@@ -156,6 +158,11 @@
 											}
 											k++;
 										});
+								
+								//触发隐藏相同项和高亮显示最大值的功能
+								hideSame();
+								highLight();
+								
 							}
 						});
 					});
@@ -195,9 +202,11 @@
 					}
 					k++;
 			});
-		});
-	
-	
+		
+		
+		
+		
+		
 		//滚动条事件，显示顶层div
 /* 		$(window).scroll(function(){
 			if($(document).scrollTop()>120){
@@ -207,6 +216,69 @@
 			}
 		}); */
 		
+		function hideSame(){
+			//先清除样式
+			$("tr").each(function(index){
+				if(index>1){
+					$(this).show();
+				}
+			});
+			
+			if($("#hideSame").prop("checked")){
+				$("tr").each(function(index){
+					if(index>1){
+						if($(this).find(".input1").val()==$(this).find(".input2").val()){
+							if($(this).find(".input2").val()==$(this).find(".input3").val()){
+								if($(this).find(".input3").val()==$(this).find(".input4").val()){
+									$(this).hide();
+								}
+							}
+						}
+					}
+				});
+			}
+		}
+		
+		//为隐藏相同项复选框绑定事件
+		$("#hideSame").click(hideSame);
+		
+		
+		function highLight(){
+			//先清除样式
+			$("input").css("background-color","white");
+			
+			if($("#highLight").prop("checked")){
+				$("button").each(function(){
+					var val=0;
+					var objArr=[];
+					$(this).parent().parent().find("input").each(function(){
+						
+						if(parseFloat($(this).val())>val){
+							val=parseFloat($(this).val());
+							objArr=[];
+							objArr.push(this);
+						}else if(parseFloat($(this).val())==val){
+							objArr.push(this);
+						}
+					});
+					//alert(objArr.length);
+/* 					for(var obj in objArr){
+						$(obj).css("background-color","yellow");
+					} */
+					//????为什么使用js遍历的方式不能转换为jquery对象？？
+					/* for(var i=0;i<objArr.lenght;i++){
+						$(objArr[i]).css("background-color","yellow");
+					} */
+					$(objArr).each(function(){
+						$(this).css("background-color","yellow");
+					});
+				});
+			}
+		}
+		//为高亮显示最大值绑定事件
+		$("#highLight").click(highLight);
+		
+	});
 </script>
 
 </head>
@@ -228,10 +300,14 @@
 
 	<div id="QDiv">
 		<input type="hidden" id="chartData" />
-		<table WIDTH="84%" align="right" CELLSPACING="0" CELLPADDING="0">
+		<table WIDTH="100%" align="right" CELLSPACING="0" CELLPADDING="0">
 			<tbody>
 				<tr>
-					<td width="25%">
+					<td width="20%">
+						<input id="hideSame" type="checkbox" ><label for="hideSame">隐藏相同项</label><br/>
+						<input id="highLight" type="checkbox"><label for="highLight">高亮显示最大值</label>
+					</td>
+					<td width="20%">
 						<div id="Q1">
 							<div>
 								<label>品牌</label>
@@ -249,7 +325,7 @@
 							</div>
 						</div>
 					</td>
-					<td width="25%">
+					<td width="20%">
 						<div id="Q2">
 							<div>
 								<label>品牌</label>
@@ -267,7 +343,7 @@
 							</div>
 						</div>
 					</td>
-					<td width="25%">
+					<td width="20%">
 						<div id="Q3">
 							<div>
 								<label>品牌</label>
@@ -286,7 +362,7 @@
 						</div>
 
 					</td>
-					<td width="25%">
+					<td width="20%">
 						<div id="Q4">
 							<div>
 								<label>品牌</label>
@@ -329,6 +405,9 @@
 					</tr>
 					<tr>
 						<td><button>市场报价</button></td>
+					</tr>
+					<tr>
+						<td><button>销量</button></td>
 					</tr>
 					<tr>
 						<td><button>生产时间(年式)</button></td>

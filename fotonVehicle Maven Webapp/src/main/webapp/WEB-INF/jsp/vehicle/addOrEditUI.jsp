@@ -117,7 +117,7 @@
 						if (i % 2 == 0) {
 
 							var tmp = data[this.id];
-							var sArr = tmp.split("-");
+							var sArr = tmp.split("=");
 
 							var j = 0;
 							$(this).find("input").each(function(index) {
@@ -161,7 +161,7 @@
 					var size=$(this).find("input").length;
 					$(this).find("input").each(function(i){
 						if(i<size-1){
-							s=s+$(this).val()+"-";
+							s=s+$(this).val()+"=";
 						}else{
 							s=s+$(this).val();
 						}
@@ -312,6 +312,9 @@
 					</tr>
 					<tr>
 						<td>市场报价</td>
+					</tr>
+					<tr>
+						<td>销量</td>
 					</tr>
 					<tr>
 						<td>生产时间(年式)</td>
