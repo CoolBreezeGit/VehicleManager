@@ -1,6 +1,6 @@
 package com.coolbreeze.vehicle.interceptor;
 
-import com.coolbreeze.oa.domain.User;
+import com.coolbreeze.vehicle.domain.User;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;

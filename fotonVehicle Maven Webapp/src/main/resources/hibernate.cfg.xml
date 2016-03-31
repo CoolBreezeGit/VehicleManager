@@ -16,11 +16,11 @@
 	<property name="hibernate.hbm2ddl.auto">update</property>
 	
 	<!-- 导入映射文件 -->
-	<mapping resource="com/coolbreeze/oa/domain/User.hbm.xml" />
-	<mapping resource="com/coolbreeze/oa/domain/V_Brand.hbm.xml" />
-	<mapping resource="com/coolbreeze/oa/domain/V_Configure.hbm.xml" />
-	<mapping resource="com/coolbreeze/oa/domain/V_Param.hbm.xml" />
-	<mapping resource="com/coolbreeze/oa/domain/V_Type.hbm.xml" />
+	<mapping resource="com/coolbreeze/vehicle/domain/User.hbm.xml" />
+	<mapping resource="com/coolbreeze/vehicle/domain/V_Brand.hbm.xml" />
+	<mapping resource="com/coolbreeze/vehicle/domain/V_Configure.hbm.xml" />
+	<mapping resource="com/coolbreeze/vehicle/domain/V_Param.hbm.xml" />
+	<mapping resource="com/coolbreeze/vehicle/domain/V_Type.hbm.xml" />
 
 
 </session-factory>

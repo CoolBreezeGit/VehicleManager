@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.coolbreeze.vehicle.domain">
+
+	<class name="V_Type">
+		<id name="id">
+            <generator class="native"/>
+		</id>
+
+		<property name="name"></property>
+		
+		<!-- 与品牌的多对一关系 -->
+		<many-to-one name="v_Brand" class="V_Brand" column="v_BrandId"></many-to-one>
+		
+		<!-- 与配置的一对多关系 -->
+		<set name="v_Configures" cascade="delete">
+			<key column="v_TypeId"></key>
+			<one-to-many class="V_Configure"/>
+		</set>
+
+	</class>
+	
+</hibernate-mapping>
