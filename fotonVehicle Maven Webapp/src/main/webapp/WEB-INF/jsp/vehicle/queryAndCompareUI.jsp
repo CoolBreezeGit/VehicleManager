@@ -208,25 +208,36 @@
 		
 		
 		//滚动条事件，显示顶层div
-/* 		$(window).scroll(function(){
-			if($(document).scrollTop()>120){
-				$("#info").show();
+		$(window).scroll(function(){
+			//alert($(document).scrollTop());
+			if($(document).scrollTop()>80){
+				//$("#QDiv").css("style","background-color:grey;position:fixed;z-index:999");
+				
+				/* $("#QDiv").css("left","100px");
+				$("#QDiv").css("position","fixed");
+				$("#QDiv").css("z-index","999");
+				$("#QDiv").css("background-color","grey"); */
+				
+				$("#QDiv").css({"width" : "100%","position" : "fixed","z-index" : 999});
+				
 			}else{
-				$("#info").hide();
+				$("#QDiv").css({"position" : "relative"});
 			}
-		}); */
+		});
+		
+		
 		
 		function hideSame(){
 			//先清除样式
 			$("tr").each(function(index){
-				if(index>1){
+				if(index>0){
 					$(this).show();
 				}
 			});
 			
 			if($("#hideSame").prop("checked")){
 				$("tr").each(function(index){
-					if(index>1){
+					if(index>0){
 						if($(this).find(".input1").val()==$(this).find(".input2").val()){
 							if($(this).find(".input2").val()==$(this).find(".input3").val()){
 								if($(this).find(".input3").val()==$(this).find(".input4").val()){
@@ -248,6 +259,7 @@
 			$("input").css("background-color","white");
 			
 			if($("#highLight").prop("checked")){
+				
 				$("button").each(function(){
 					var val=0;
 					var objArr=[];
@@ -285,27 +297,14 @@
 
 <body>
 
-	<div id="info" style="display:none;align:center;position:fixed;z-index:999">
-		<table WIDTH="84%" align="center" CELLSPACING="0" CELLPADDING="0">
-		<tbody>
-			<tr>
-				<td><h1>AAAA</h1></td>
-				<td><h1>CCC</h1></td>
-				<td><h1>DDD</h1></td>
-				<td><h1>DDD</h1></td>
-			</tr>
-		</tbody>
-		</table>
-	</div>
-
-	<div id="QDiv">
+	<div id="QDiv" >
 		<input type="hidden" id="chartData" />
 		<table WIDTH="100%" align="right" CELLSPACING="0" CELLPADDING="0">
 			<tbody>
 				<tr>
 					<td width="20%">
-						<input id="hideSame" type="checkbox" ><label for="hideSame">隐藏相同项</label><br/>
-						<input id="highLight" type="checkbox"><label for="highLight">高亮显示最大值</label>
+					&nbsp; &nbsp; &nbsp; &nbsp; <input id="hideSame" type="checkbox" ><label for="hideSame">隐藏相同项</label><br/>
+					&nbsp; &nbsp; &nbsp; &nbsp; <input id="highLight" type="checkbox"><label for="highLight">高亮显示最大值</label>
 					</td>
 					<td width="20%">
 						<div id="Q1">
@@ -383,11 +382,11 @@
 				</tr>
 			</tbody>
 		</table>
-
+<h3>==================================================================================================================</h3>
 	</div>
 
 
-<h3>==================================================================================================================</h3>
+
 	<div id="paramData" >
 		<div>
 			<div>
