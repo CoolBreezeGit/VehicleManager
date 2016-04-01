@@ -409,7 +409,7 @@
 						<td><button>销量</button></td>
 					</tr>
 					<tr>
-						<td><button>生产时间(年式)</button></td>
+						<td>生产时间(年式)</td>
 					</tr>
 					<tr>
 						<td>发动机位置</td>
