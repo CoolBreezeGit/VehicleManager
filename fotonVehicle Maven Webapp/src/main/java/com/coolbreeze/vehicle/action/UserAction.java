@@ -21,7 +21,7 @@ public class UserAction extends ActionSupport implements ModelDriven<User>{
 	
 	private User userDTO=new User();
 
-	@Override
+
 	public User getModel() {		
 		return userDTO;
 	}
